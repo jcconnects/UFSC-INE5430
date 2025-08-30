@@ -19,6 +19,65 @@
 \usepackage{listings}
 \usepackage{siunitx} % For \si{\micro\second}
 \usepackage[acronym,nonumberlist]{glossaries}
+\begin{filecontents}{references.bib}
+
+@online{wcr_varieties,
+  author = {{World Coffee Research}},
+  title  = {Coffee Varieties Catalog},
+  year   = {2023},
+  url    = {https://worldcoffeeresearch.org/resources/coffee-varieties-catalog},
+  note   = {acessado em 29 ago. 2025}
+}
+
+@online{embrapa_catalog,
+  author = {{EMBRAPA}},
+  title  = {Catálogo de cultivares de café arábica (PDF)},
+  year   = {s.d.},
+  url    = {https://www.infoteca.cnptia.embrapa.br/infoteca/bitstream/doc/1145722/1/v18-09-09-22-Embrapa-Cafe-Documentos-16.pdf},
+  note   = {acessado em 29 ago. 2025}
+}
+
+@online{sca_brewing_chart,
+  author = {{Specialty Coffee Association}},
+  title  = {Towards a New Brewing Chart (SCA article)},
+  year   = {2021},
+  url    = {https://sca.coffee/sca-news/25/issue-13/towards-a-new-brewing-chart},
+  note   = { acessado em 29 ago. 2025}
+}
+
+@misc{sca_standard_pdf,
+  author = {{SCA / Gold Cup Standard (PDF mirror)}},
+  title  = {Coffee Brewing Control Chart / SCA Standards (PDF)},
+  year   = {2021},
+  url    = {https://coffeegeek.com/wp-content/uploads/2023/10/SCAGoldCupStandard.pdf},
+  note   = {acessado em 29 ago. 2025}
+}
+
+@online{counterculture_pourover,
+  author = {{Counter Culture Coffee}},
+  title  = {Guide To Pour-Over Coffee},
+  year   = {2022},
+  url    = {https://counterculturecoffee.com/blogs/counter-culture-coffee/guide-to-pour-over-coffee},
+  note   = {acessado em 29 ago. 2025}
+}
+
+@online{perfectdailygrind_geisha,
+  author = {{Perfect Daily Grind}},
+  title  = {Panama, Colombia, Ethiopia: There is no “best” origin for Gesha coffee},
+  year   = {2024},
+  url    = {https://perfectdailygrind.com/2024/01/best-origin-for-gesha-coffee/},
+  note   = {acessado em 29 ago. 2025}
+}
+
+@online{wikipedia_geisha,
+  author = {{Wikipedia contributors}},
+  title  = {Geisha (coffee) --- Wikipedia},
+  year   = {2025},
+  url    = {https://en.wikipedia.org/wiki/Geisha_(coffee)},
+  note   = {acessado em 29 ago. 2025}
+}
+\end{filecontents}
+
 % Configuring listings for code and log display
 \lstset{
   basicstyle=\ttfamily\small,
@@ -63,6 +122,88 @@
 
 \section{Modelagem do Conhecimento em Lógica}
 \subsection{Questão 1}
+\section{Variedades (descrição, torra, moagem e preparo)}
+A seguir, para cada variedade há: descrição resumida, torra recomendada (e justificativa), moagem sugerida e modos de preparo indicados.
+
+\subsection{Robusta (Coffea canephora)}
+{Descrição} Sabor acentuado e rústico, corpo pesado, maior resistência a doenças e teor de cafeína elevado; frequentemente utilizado em blends e produtos solúveis.  
+{Torra recomendada} \textbf{Média a escura} — realça corpo e notas torradas, equilibrando a acidez naturalmente baixa.  
+{Moagem sugerida} Fina (espresso) a média (filtros rápidos), conforme o método.  
+{Modos de preparo indicados} Espresso, moka, blends industriais e cafés instantâneos.
+
+\subsection{Conilon (grupo canephora, termo comum no Brasil)}
+{Descrição} Variante de canephora muito explorada no Brasil; grãos tipicamente menores, amargor pronunciado e alto teor de cafeína; uso comum em commodity e blends.  
+{Torra recomendada} \textbf{Média a escura} — enfatiza corpo e notas de torra.  
+{Moagem sugerida} Fina (espresso) / média (filtrados comerciais).  
+{Modos de preparo indicados} Espresso, blends e solúveis.
+
+\subsection{Arábica (Coffea arabica — genérico)}
+{Descrição} A variedade mais consumida globalmente; perfis sensoriais complexos com acidez, doçura e notas frutadas/ florais, fortemente dependentes de terroir e altitude.  
+{Torra recomendada} \textbf{Clara a média} — preserva as características de origem e a acidez desejada.  
+{Moagem sugerida} Média a média-fina (pour-over); fina para espresso specialty.  
+{Modos de preparo indicados} Pour-over (V60), Chemex, Aeropress, filtros e espresso specialty.
+
+\subsection{Bourbon}
+{Descrição} Subgrupo de Arábica com doçura pronunciada e aroma intenso; bebida tipicamente suave.  
+{Torra recomendada} \textbf{Clara a média} — evidencia doçura e nuances carameladas/frutadas.  
+{Moagem sugerida} Média a média-fina.  
+{Modos de preparo indicados} Pour-over, Chemex, Aeropress; prensa francesa quando se busca maior corpo.
+
+\subsection{Catuaí (Catuai)}
+{Descrição} Cultivar brasileira resultante de cruzamentos; planta compacta, produtividade e doçura natural; amplamente plantado.  
+{Torra recomendada} \textbf{Média} — equilíbrio entre doçura e corpo.  
+{Moagem sugerida} Média.  
+{Modos de preparo indicados} Filtrados (V60, coador), blends para espresso, prensa francesa.
+
+\subsection{Mundo Novo (Novo Mundo)}
+{Descrição} Cruzamento natural (Typica × Bourbon); vigoroso, produtivo; tende a oferecer corpo mais pronunciado e doçura.  
+{Torra recomendada} \textbf{Média a média-escura} — realça corpo e notas doces.  
+{Moagem sugerida} Média a média-grosseira.  
+{Modos de preparo indicados} Pour-over, prensa francesa, blends que visem corpo.
+
+\subsection{Caturra}
+{Descrição} Mutação do Bourbon com planta de porte compacto; boa produtividade inicial; produz cafés de boa qualidade e doçura.  
+{Torra recomendada} \textbf{Clara a média} — preserva equilíbrio entre acidez e doçura.  
+{Moagem sugerida} Média.  
+{Modos de preparo indicados} Filtrados, Chemex, Aeropress, single-origin.
+
+\subsection{Acaiá (Acaia)}
+{Descrição} Mutação do Mundo Novo; variedade rara, com bom desempenho em altitudes acima de \(\sim\)800\,m; xícara com notas frutadas e lembranças de chocolate.  
+{Torra recomendada} \textbf{Clara a média} — evidencia notas frutadas e acidez média.  
+{Moagem sugerida} Média-fina (pour-over) / média para métodos com mais contato.  
+{Modos de preparo indicados} Pour-over, Aeropress, cupping.
+
+\subsection{Typica}
+{Descrição} Variedade histórica e clássica; perfil doce e floral/complexo; menor produtividade e maior sensibilidade a pragas.  
+{Torra recomendada} \textbf{Clara} — preserva delicadeza e complexidade aromática.  
+{Moagem sugerida} Média-fina.  
+{Modos de preparo indicados} Pour-over, V60, cupping.
+
+\subsection{Geisha (Gesha)}
+{Descrição} Variedade muito expressiva aromaticamente (jasmim, flores, frutas de caroço); extremamente valorizada no mercado specialty.  
+{Torra recomendada} \textbf{Clara} (por vezes muito clara) — para não mascarar notas voláteis e florais.  
+{Moagem sugerida} Média-fina a média.  
+{Modos de preparo indicados} Pour-over (V60), Kalita/Wave, métodos que priorizem aroma e limpeza.
+
+\subsection{Maragogipe}
+{Descrição} Mutação de Typica com sementes excepcionalmente grandes ("grão-elefante"); perfil muitas vezes suave e frutado; baixa produtividade.  
+{Torra recomendada} \textbf{Clara a média} — destaca notas delicadas.  
+{Moagem sugerida} Média.  
+{Modos de preparo indicados} Filtrados especiais, single-origin.
+
+\subsection{Pacamara (Pacas × Maragogipe)}
+{Descrição} Híbrido que produz grãos grandes e perfil complexo (floral, frutado e corpo médio).  
+{Torra recomendada} \textbf{Clara a média} — realça complexidade sem sobrecarregar com notas de torra.  
+{Moagem sugerida} Média-fina a média.  
+{Modos de preparo indicados} Pour-over, Aeropress, extrações experimentais em pequenos lotes.
+
+\section{Recomendações práticas gerais}
+\begin{itemize}
+  \item \textbf{Moagem por método (resumo):} Espresso: \emph{fina}; Aeropress/V60: \emph{média-fina}; Chemex: \emph{média-grosseira}; French press: \emph{grossa}; Cold brew: \emph{extra grossa}.
+  \item \textbf{Torra:} Clara preserva origem e acidez; média equilibra doçura e corpo; escura traz notas de torra e reduz percepção de acidez — escolha conforme objetivo sensorial.
+  \item \textbf{Ajustes (dial-in):} Afine moagem, dose e tempo/temperatura antes de alterar torra; pequenas mudanças na moagem provocam grandes mudanças na extração.
+\end{itemize}
+
 
 \bibliographystyle{plain}
 \bibliography{references}
