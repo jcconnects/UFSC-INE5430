@@ -73,7 +73,7 @@ Conhecimento é procedural
 Precursor das linguagens orientadas a objeto
 Conhecimento é procedural
 
-# Sistemas de Produção e Sistemas Especialistas
+# 04 - Sistemas de Produção e Sistemas Especialistas
 [[04-se_pos.pdf]]
 
 Sempre posso usar um mecanismo de prova de teoremas para montar um motor de inferência lógica do framework de um sistema especialista.
@@ -102,3 +102,42 @@ Sistemas de produção são os `Sistemas de Post`
 [[04-se_pos.pdf#page=24&selection=0,0,0,10&color=yellow|04-se_pos, p.24]]
 ## Arcabouço
 [[04-se_pos.pdf#page=32&selection=0,0,0,15&color=yellow|04-se_pos, p.32]]
+
+# 5 - Lógica RC
+[[05-LogicaRC.pdf]]
+
+## [Sintaxe](05-LogicaRC.pdf#page=3&selection=0,0,0,7&color=yellow|05-LogicaRC, p.3)
+Constante -> Início do alfabeto
+Variável -> Final do alfabeto
+Função -> Meio do alfabeto
+Predicado -> Maiúsculas
+![[05-LogicaRC.pdf#page=5&rect=104,18,237,303&color=yellow|05-LogicaRC, p.5]]
+## [Semântica](05-LogicaRC.pdf#page=6&selection=0,0,0,9&color=yellow|05-LogicaRC, p.6)
+![[05-LogicaRC.pdf#page=6&rect=349,66,557,702&color=yellow|05-LogicaRC, p.6]]
+
+## [Representação de Conhecimento em Lógica](05-LogicaRC.pdf#page=14&selection=0,0,0,12&color=yellow|05-LogicaRC, p.14)
+Como podemos inferir algo, baseado em uma determinada premissa?
+### [Raciocínio em Lógica](05-LogicaRC.pdf#page=17&selection=0,0,0,20&color=yellow|05-LogicaRC, p.17)
+Dado um conjunto de fatos e regras, podemos inferir novos conhecimentos que sejam verdadeiros.
+
+Precisamos de um método para aplicar a prova automática. Os que vamos estudar são os seguintes:
+- Método da Resolução
+- Método de Tableaux
+
+## Formas normais
+[[05-LogicaRC.pdf#page=22&selection=0,0,0,24&color=yellow|05-LogicaRC, p.22]]
+[[05-LogicaRC.pdf#page=22&selection=2,0,2,42&color=yellow|Forma normal conjuntiva (ou forma clausal)]]
+[[05-LogicaRC.pdf#page=23&selection=2,0,2,47&color=yellow|Forma normal disjuntiva (ou forma clausal dual)]]
+
+### Algoritmo FNC
+[[05-LogicaRC.pdf#page=25&selection=0,0,0,13&color=yellow|Algoritmo FNC]]
+## [Método da Resolução](05-LogicaRC.pdf#page=32&selection=0,0,0,19&color=yellow|Método da Resolução)
+1. Coloco na CNF
+2. 
+
+### Algoritmo de Unificação
+[[05-LogicaRC.pdf#page=33&selection=0,0,0,22&color=yellow|Algoritmo de Unificação]]
+
+
+
+
