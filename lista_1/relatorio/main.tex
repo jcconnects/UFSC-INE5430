@@ -19,64 +19,6 @@
 \usepackage{listings}
 \usepackage{siunitx} % For \si{\micro\second}
 \usepackage[acronym,nonumberlist]{glossaries}
-\begin{filecontents}{references.bib}
-
-@online{wcr_varieties,
-  author = {{World Coffee Research}},
-  title  = {Coffee Varieties Catalog},
-  year   = {2023},
-  url    = {https://worldcoffeeresearch.org/resources/coffee-varieties-catalog},
-  note   = {acessado em 29 ago. 2025}
-}
-
-@online{embrapa_catalog,
-  author = {{EMBRAPA}},
-  title  = {Catálogo de cultivares de café arábica (PDF)},
-  year   = {s.d.},
-  url    = {https://www.infoteca.cnptia.embrapa.br/infoteca/bitstream/doc/1145722/1/v18-09-09-22-Embrapa-Cafe-Documentos-16.pdf},
-  note   = {acessado em 29 ago. 2025}
-}
-
-@online{sca_brewing_chart,
-  author = {{Specialty Coffee Association}},
-  title  = {Towards a New Brewing Chart (SCA article)},
-  year   = {2021},
-  url    = {https://sca.coffee/sca-news/25/issue-13/towards-a-new-brewing-chart},
-  note   = { acessado em 29 ago. 2025}
-}
-
-@misc{sca_standard_pdf,
-  author = {{SCA / Gold Cup Standard (PDF mirror)}},
-  title  = {Coffee Brewing Control Chart / SCA Standards (PDF)},
-  year   = {2021},
-  url    = {https://coffeegeek.com/wp-content/uploads/2023/10/SCAGoldCupStandard.pdf},
-  note   = {acessado em 29 ago. 2025}
-}
-
-@online{counterculture_pourover,
-  author = {{Counter Culture Coffee}},
-  title  = {Guide To Pour-Over Coffee},
-  year   = {2022},
-  url    = {https://counterculturecoffee.com/blogs/counter-culture-coffee/guide-to-pour-over-coffee},
-  note   = {acessado em 29 ago. 2025}
-}
-
-@online{perfectdailygrind_geisha,
-  author = {{Perfect Daily Grind}},
-  title  = {Panama, Colombia, Ethiopia: There is no “best” origin for Gesha coffee},
-  year   = {2024},
-  url    = {https://perfectdailygrind.com/2024/01/best-origin-for-gesha-coffee/},
-  note   = {acessado em 29 ago. 2025}
-}
-
-@online{wikipedia_geisha,
-  author = {{Wikipedia contributors}},
-  title  = {Geisha (coffee) --- Wikipedia},
-  year   = {2025},
-  url    = {https://en.wikipedia.org/wiki/Geisha_(coffee)},
-  note   = {acessado em 29 ago. 2025}
-}
-\end{filecontents}
 
 % Configuring listings for code and log display
 \lstset{
@@ -242,7 +184,14 @@ Pacamara & Clara a média & Média a fina & Pour-over, Aeropress \\
 \end{table}
 
 
-\bibliographystyle{plain}
-\bibliography{referencias}
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+\nocite{counterculture_pourover}
+\nocite{embrapa_catalog}
+\nocite{perfectdailygrind_geisha}
+\nocite{sca_brewing_chart}
+\nocite{sca_standard_pdf}
+\nocite{wcr_varieties}
+\nocite{wikipedia_geisha}
 
 \end{document}
