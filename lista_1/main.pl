@@ -1,6 +1,5 @@
 %% Base de Conhecimento sobre Variedades de Café
 %% Autor: André Thiago Pfleger, Gustavo Girotto, João Pedro Schmidt Cordeiro
-%% Data: 24/07/2024
 %%
 %% Este arquivo contém fatos e regras em Prolog para representar o conhecimento
 %% sobre diferentes variedades de café, suas características e métodos de preparo,

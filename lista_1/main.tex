@@ -19,6 +19,7 @@
 \usepackage{listings}
 \usepackage{siunitx} % For \si{\micro\second}
 \usepackage[acronym,nonumberlist]{glossaries}
+\usepackage{placeins}
 
 % Configuring listings for code and log display
 \lstset{
@@ -32,10 +33,15 @@
   commentstyle=\color{gray},
   showstringspaces=false,
   tabsize=2,
+  inputencoding=utf8,
+  extendedchars=true,
+  literate=
+    {á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {ê}{{\^e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ç}{{\c c}}1
+    {Á}{{\'A}}1 {Ã}{{\~A}}1 {É}{{\'E}}1 {Ê}{{\^E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1 {Ç}{{\c C}}1
 }
 
 
-\title{Lista 1 - Modelagem do Conhecimento em Lógica }
+\title{Lista 1 - Modelagem de Conhecimento em Lógica Aplicada à Análise de Cafés Especiais}
 \author{André Thiago Pfleger \\  Gustavo Girotto \\ João Pedro Schmidt Cordeiro}
 \date{\today}
 
@@ -49,7 +55,7 @@
 
       \textbf{\Large{INE5430 - Inteligência Artificial}} \\[2cm]
 
-      \textbf{\huge{Lista 1 - Modelagem do Conhecimento em Lógica }} \\[3cm]
+      \textbf{\huge{Lista 1 - Modelagem de Conhecimento em Lógica Aplicada à Análise de Cafés Especiais}} \\[3cm]
 
       André Thiago Pfleger \\
       Gustavo Girotto \\
@@ -62,8 +68,14 @@
    \end{center}
 \end{titlepage}
 
-\section{Modelagem do Conhecimento em Lógica}
-\subsection{Questão 1}
+\section{Introdução}
+
+Este trabalho apresenta a modelagem de conhecimento em lógica para a área de análise de cafés. Conforme solicitado na Lista de Exercícios I, o objetivo é estruturar o conhecimento de um domínio específico — neste caso, o universo dos cafés especiais — para que possa servir de base para um futuro sistema especialista.
+
+A escolha do tema justifica-se pelo crescente interesse cultural e de mercado em cafés de alta qualidade e pela complexidade envolvida em sua análise, que abrange desde a variedade do grão, origem e processamento, até os detalhes da torra, moagem e métodos de preparo. Cada uma dessas etapas influencia diretamente as características sensoriais da bebida final, como aroma, sabor, acidez e corpo.
+
+A base de conhecimento aqui desenvolvida busca organizar essas informações de forma hierárquica e relacional, estabelecendo fatos e regras que permitam, por exemplo, recomendar um tipo de café baseado nas preferências do usuário, sugerir o método de preparo ideal para uma determinada variedade ou mesmo auxiliar na harmonização da bebida com alimentos.
+
 \section{Variedades (descrição, torra, moagem e preparo)}
 A seguir, para cada variedade há: descrição resumida, torra recomendada (e justificativa), moagem sugerida e modos de preparo indicados.
 
@@ -182,6 +194,14 @@ Pacamara & Clara a média & Média a fina & Pour-over, Aeropress \\
 \hline
 \end{tabular}
 \end{table}
+
+
+\FloatBarrier
+\appendix
+\section{Código Fonte em Prolog}
+\label{sec:codigo_prolog}
+O código a seguir representa a base de conhecimento completa desenvolvida em Prolog para este trabalho.
+\lstinputlisting[language=Prolog, caption={Base de Conhecimento em Prolog sobre Variedades de Café}, label={lst:prolog}]{main.pl}
 
 
 \bibliographystyle{IEEEtran}
