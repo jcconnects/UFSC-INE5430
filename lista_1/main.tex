@@ -1,13 +1,31 @@
+% !TeX program = lualatex
+% This document requires LuaLaTeX for compilation
+
 \documentclass[a4paper,12pt]{article}
-\usepackage[utf8]{inputenc}
-\usepackage[alf]{abntex2cite}
+
+% Engine detection and compatibility check
+\RequirePackage{iftex}
+\ifLuaTeX
+  % Document is being compiled with LuaTeX - proceed normally
+\else
+  \PackageError{main}{This document requires LuaLaTeX for compilation.
+    Please use: lualatex main.tex}
+    {This document uses fontspec and other LuaTeX-specific features.}
+\fi
+
+\usepackage{fontspec}
 \usepackage[english]{babel}
+
+% Font configuration for LuaTeX
+\setmainfont{Latin Modern Roman}
+\setsansfont{Latin Modern Sans}
+\setmonofont{Latin Modern Mono}
+
 \usepackage{amsmath} % Para equações matemáticas
 \usepackage{geometry}
-\usepackage{cite}
 \geometry{margin=1in}
 \usepackage{hyperref}
-\usepackage{natbib}
+\usepackage[sort]{natbib}
 \usepackage{parskip}
 \usepackage{longtable}
 \usepackage{xcolor}
@@ -33,11 +51,7 @@
   commentstyle=\color{gray},
   showstringspaces=false,
   tabsize=2,
-  inputencoding=utf8,
-  extendedchars=true,
-  literate=
-    {á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {ê}{{\^e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ç}{{\c c}}1
-    {Á}{{\'A}}1 {Ã}{{\~A}}1 {É}{{\'E}}1 {Ê}{{\^E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1 {Ç}{{\c C}}1
+  extendedchars=true
 }
 
 
