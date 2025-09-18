@@ -139,5 +139,25 @@ Precisamos de um método para aplicar a prova automática. Os que vamos estudar 
 [[05-LogicaRC.pdf#page=33&selection=0,0,0,22&color=yellow|Algoritmo de Unificação]]
 
 
+# 6 - Busca
+[[06-busca.pdf]]
 
+Exploration vs Exploitation
 
+## Busca em Largura
+## Busca em Profundidade
+## Busca Bidirecional
+## Busca heurística
+[[06-busca.pdf#page=22&selection=0,0,0,16&color=yellow|06-busca, p.22]]
+
+Algoritmo A* assegura a melhor solução, tendo em vista a admissibilidade da heurística.
+## Subida de Encosta
+[[06-busca.pdf#page=28&selection=0,0,0,17&color=yellow|06-busca, p.28]]
+
+## Subida de Encosta pela Trilha mais Íngreme
+[[06-busca.pdf#page=32&selection=0,10,0,37&color=yellow|06-busca, p.32]]
+
+## Têmpera Simulada
+[[06-busca.pdf#page=34&selection=0,0,0,16&color=yellow|06-busca, p.34]]
+
+# 7 - Jogos
