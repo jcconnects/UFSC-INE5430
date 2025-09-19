@@ -1,0 +1,222 @@
+% !TeX program = lualatex
+% This document requires LuaLaTeX for compilation
+
+\documentclass[a4paper,12pt]{article}
+
+% Engine detection and compatibility check
+\RequirePackage{iftex}
+\ifLuaTeX
+  % Document is being compiled with LuaTeX - proceed normally
+\else
+  \PackageError{main}{This document requires LuaLaTeX for compilation.
+    Please use: lualatex main.tex}
+    {This document uses fontspec and other LuaTeX-specific features.}
+\fi
+
+\usepackage{fontspec}
+\usepackage[english]{babel}
+
+% Font configuration for LuaTeX
+\setmainfont{Latin Modern Roman}
+\setsansfont{Latin Modern Sans}
+\setmonofont{Latin Modern Mono}
+
+\usepackage{amsmath} % Para equações matemáticas
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{hyperref}
+\usepackage[sort,numbers]{natbib}
+\usepackage{parskip}
+\usepackage{longtable}
+\usepackage{xcolor}
+\usepackage{tabularx}
+\setlength{\marginparwidth}{2cm}
+\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+\usepackage{comment}
+\usepackage{graphicx} % Para resizebox
+\usepackage{array} % Para colunas com largura fixa
+\usepackage{listings}
+\usepackage{siunitx} % For \si{\micro\second}
+\usepackage[acronym,nonumberlist]{glossaries}
+\usepackage{placeins}
+
+% Configuring listings for code and log display
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  breakatwhitespace=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny,
+  keywordstyle=\color{blue},
+  commentstyle=\color{gray},
+  showstringspaces=false,
+  tabsize=2,
+  extendedchars=true
+}
+
+
+\title{Lista 1 - Modelagem de Conhecimento em Lógica Aplicada à Análise de Cafés Especiais}
+\author{André Thiago Pfleger \\  Gustavo Girotto \\ João Pedro Schmidt Cordeiro}
+\date{\today}
+
+\begin{document}
+
+\begin{titlepage}
+   \begin{center}
+      \textsc{Universidade Federal de Santa Catarina} \\
+      \textsc{Centro Tecnológico} \\
+      \textsc{Departamento de Informática e Estatística} \\[4cm]
+
+      \textbf{\Large{INE5430 - Inteligência Artificial}} \\[2cm]
+
+      \textbf{\huge{Trabalho 1 - Construção de um Sistema Especialista para Análise de Cafés Especiais}} \\[3cm]
+
+      André Thiago Pfleger \\
+      Gustavo Girotto \\
+      João Pedro Schmidt Cordeiro \\
+      
+      \vfill
+      
+      {Florianópolis} \\
+      {\today}
+   \end{center}
+\end{titlepage}
+
+\section{Introdução}
+
+
+
+\section{Variedades de café (descrição, torra, moagem e preparo)}
+A seguir, para cada variedade há: descrição resumida, torra recomendada (e justificativa), moagem sugerida e modos de preparo indicados.
+
+\subsection{Robusta (Coffea canephora)}
+{Descrição} Sabor acentuado e rústico, corpo pesado, maior resistência a doenças e teor de cafeína elevado; frequentemente utilizado em blends e produtos solúveis.  
+{Torra recomendada} \textbf{Média a escura} — realça corpo e notas torradas, equilibrando a acidez naturalmente baixa.  
+{Moagem sugerida} Fina (espresso) a média (filtros rápidos), conforme o método.  
+{Modos de preparo indicados} Espresso, moka, blends industriais e cafés instantâneos.
+
+\subsection{Conilon (grupo canephora, termo comum no Brasil)}
+{Descrição} Variante de canephora muito explorada no Brasil; grãos tipicamente menores, amargor pronunciado e alto teor de cafeína; uso comum em commodity e blends.  
+{Torra recomendada} \textbf{Média a escura} — enfatiza corpo e notas de torra.  
+{Moagem sugerida} Fina (espresso) / média (filtrados comerciais).  
+{Modos de preparo indicados} Espresso, blends e solúveis.
+
+\subsection{Arábica (Coffea arabica — genérico)}
+{Descrição} A variedade mais consumida globalmente; perfis sensoriais complexos com acidez, doçura e notas frutadas/ florais, fortemente dependentes de terroir e altitude.  
+{Torra recomendada} \textbf{Clara a média} — preserva as características de origem e a acidez desejada.  
+{Moagem sugerida} Média a média-fina (pour-over); fina para espresso specialty.  
+{Modos de preparo indicados} Pour-over (V60), Chemex, Aeropress, filtros e espresso specialty.
+
+\subsection{Bourbon}
+{Descrição} Subgrupo de Arábica com doçura pronunciada e aroma intenso; bebida tipicamente suave.  
+{Torra recomendada} \textbf{Clara a média} — evidencia doçura e nuances carameladas/frutadas.  
+{Moagem sugerida} Média a média-fina.  
+{Modos de preparo indicados} Pour-over, Chemex, Aeropress; prensa francesa quando se busca maior corpo.
+
+\subsection{Catuaí (Catuai)}
+{Descrição} Cultivar brasileira resultante de cruzamentos; planta compacta, produtividade e doçura natural; amplamente plantado.  
+{Torra recomendada} \textbf{Média} — equilíbrio entre doçura e corpo.  
+{Moagem sugerida} Média.  
+{Modos de preparo indicados} Filtrados (V60, coador), blends para espresso, prensa francesa.
+
+\subsection{Mundo Novo (Novo Mundo)}
+{Descrição} Cruzamento natural (Typica × Bourbon); vigoroso, produtivo; tende a oferecer corpo mais pronunciado e doçura.  
+{Torra recomendada} \textbf{Média a média-escura} — realça corpo e notas doces.  
+{Moagem sugerida} Média a média-grosseira.  
+{Modos de preparo indicados} Pour-over, prensa francesa, blends que visem corpo.
+
+\subsection{Caturra}
+{Descrição} Mutação do Bourbon com planta de porte compacto; boa produtividade inicial; produz cafés de boa qualidade e doçura.  
+{Torra recomendada} \textbf{Clara a média} — preserva equilíbrio entre acidez e doçura.  
+{Moagem sugerida} Média.  
+{Modos de preparo indicados} Filtrados, Chemex, Aeropress, single-origin.
+
+\subsection{Acaiá (Acaia)}
+{Descrição} Mutação do Mundo Novo; variedade rara, com bom desempenho em altitudes acima de \(\sim\)800\,m; xícara com notas frutadas e lembranças de chocolate.  
+{Torra recomendada} \textbf{Clara a média} — evidencia notas frutadas e acidez média.  
+{Moagem sugerida} Média-fina (pour-over) / média para métodos com mais contato.  
+{Modos de preparo indicados} Pour-over, Aeropress, cupping.
+
+\subsection{Typica}
+{Descrição} Variedade histórica e clássica; perfil doce e floral/complexo; menor produtividade e maior sensibilidade a pragas.  
+{Torra recomendada} \textbf{Clara} — preserva delicadeza e complexidade aromática.  
+{Moagem sugerida} Média-fina.  
+{Modos de preparo indicados} Pour-over, V60, cupping.
+
+\subsection{Geisha (Gesha)}
+{Descrição} Variedade muito expressiva aromaticamente (jasmim, flores, frutas de caroço); extremamente valorizada no mercado specialty.  
+{Torra recomendada} \textbf{Clara} (por vezes muito clara) — para não mascarar notas voláteis e florais.  
+{Moagem sugerida} Média-fina a média.  
+{Modos de preparo indicados} Pour-over (V60), Kalita/Wave, métodos que priorizem aroma e limpeza.
+
+\subsection{Maragogipe}
+{Descrição} Mutação de Typica com sementes excepcionalmente grandes ("grão-elefante"); perfil muitas vezes suave e frutado; baixa produtividade.  
+{Torra recomendada} \textbf{Clara a média} — destaca notas delicadas.  
+{Moagem sugerida} Média.  
+{Modos de preparo indicados} Filtrados especiais, single-origin.
+
+\subsection{Pacamara (Pacas × Maragogipe)}
+{Descrição} Híbrido que produz grãos grandes e perfil complexo (floral, frutado e corpo médio).  
+{Torra recomendada} \textbf{Clara a média} — realça complexidade sem sobrecarregar com notas de torra.  
+{Moagem sugerida} Média-fina a média.  
+{Modos de preparo indicados} Pour-over, Aeropress, extrações experimentais em pequenos lotes.
+
+\section{Recomendações práticas gerais}
+\begin{itemize}
+  \item \textbf{Moagem por método (resumo):} Espresso: \emph{fina}; Aeropress/V60: \emph{média-fina}; Chemex: \emph{média-grosseira}; French press: \emph{grossa}; Cold brew: \emph{extra grossa}.
+  \item \textbf{Torra:} Clara preserva origem e acidez; média equilibra doçura e corpo; escura traz notas de torra e reduz percepção de acidez — escolha conforme objetivo sensorial.
+  \item \textbf{Ajustes (dial-in):} Afine moagem, dose e tempo/temperatura antes de alterar torra; pequenas mudanças na moagem provocam grandes mudanças na extração.
+\end{itemize}
+
+\section{Variedades de comidas selecionadas}
+
+\subsection{Pães Integrais}
+Descrição: Pães feitos com farinha integral, sem adição de fermento químico.
+\begin{itemize}
+  \item \textbf{Com sementes} — 
+  \item \textbf{Fermentação Natural} — 
+  \item \textbf{Com castanhas e Frutas secas} — 
+\end{itemize}
+
+\subsection{Queijos semicurados}
+Descrição: Queijos feitos com leite de vaca, sem adição de conservantes.
+\begin{itemize}
+  \item \textbf{Parmesão Jovem} — 
+  \item \textbf{Gouda} — 
+  \item \textbf{Canastra Meia Cura} — 
+\end{itemize}
+
+\subsection{Bolos Citricos}
+Descrição: Bolos feitos com farinha de trigo, sem adição de fermento químico.
+\begin{itemize}
+  \item \textbf{Laranja com calda} — 
+  \item \textbf{Limão} — 
+  \item \textbf{Tangerina com cobertura leve} — 
+\end{itemize}
+
+
+% construindo a tabela com base nas descrições
+\section{Resumo das Variedades em Tabela}
+
+% TODO: Aqui deve ser inserida a tabela com as variedades de café e as comidas selecionadas
+
+\FloatBarrier
+\appendix
+\section{Código Fonte em CLIPS}
+\label{sec:codigo_clips}
+O código a seguir representa a base de conhecimento completa desenvolvida em CLIPS para este trabalho.
+\lstinputlisting[language=Lisp, caption={Base de Conhecimento em CLIPS sobre Variedades de Café}, label={lst:clips}]{main.clp}
+
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+\nocite{counterculture_pourover}
+\nocite{embrapa_catalog}
+\nocite{perfectdailygrind_geisha}
+\nocite{sca_brewing_chart}
+\nocite{sca_standard_pdf}
+\nocite{wcr_varieties}
+\nocite{wikipedia_geisha}
+
+\end{document}
