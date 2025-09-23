@@ -85,6 +85,12 @@
 
 \section{Introdução}
 
+Este trabalho apresenta o desenvolvimento de um sistema especialista em CLIPS para análise e recomendação de harmonizações gastronômicas com cafés especiais. O sistema utiliza uma base de conhecimento estruturada contendo 12 variedades distintas de café, cada uma com características específicas de torra, moagem e métodos de preparo recomendados.
+
+O objetivo principal é demonstrar a aplicação prática de sistemas baseados em conhecimento para domínios especializados, implementando regras de inferência que correlacionam características técnicas do café com harmonizações gastronômicas apropriadas. O sistema foi desenvolvido seguindo princípios de engenharia de conhecimento, com ênfase na consistência, determinismo e cobertura completa do domínio.
+
+A abordagem utilizada combina frames (via \texttt{deftemplate} do CLIPS) para representação estruturada do conhecimento com regras de produção para inferência automática de recomendações. Durante o desenvolvimento, foram implementados mecanismos de controle para garantir que cada variedade de café receba exatamente uma harmonização de cada categoria (pão, queijo e bolo), resolvendo conflitos através de sistemas de prioridade bem definidos.
+
 
 
 \section{Variedades de café (descrição, torra, moagem e preparo)}
@@ -174,29 +180,104 @@ A seguir, para cada variedade há: descrição resumida, torra recomendada (e ju
 \subsection{Pães Integrais}
 Descrição: Pães feitos com farinha integral, sem adição de fermento químico.
 \begin{itemize}
-  \item \textbf{Com sementes} — 
-  \item \textbf{Fermentação Natural} — 
-  \item \textbf{Com castanhas e Frutas secas} — 
+  \item \textbf{Com sementes} — Textura mais densa e crocante, com notas terrosas que complementam cafés de corpo mais acentuado e torras mais escuras. As sementes (girassol, abóbora, linhaça) adicionam óleos naturais que equilibram a intensidade do café.
+  \item \textbf{Fermentação Natural} — Sabor mais complexo e levemente ácido devido ao processo de fermentação longa, criando harmonia com cafés de torras claras que preservam a acidez natural do grão. A textura arejada contrasta com a delicadeza dos aromas florais.
+  \item \textbf{Com castanhas e Frutas secas} — Doçura natural e notas caramelizadas das frutas secas (damasco, tâmara) e oleosidade das castanhas (nozes, amêndoas) que complementam cafés de torra média, realçando suas características equilibradas entre acidez e corpo.
 \end{itemize}
 
 \subsection{Queijos semicurados}
 Descrição: Queijos feitos com leite de vaca, sem adição de conservantes.
 \begin{itemize}
-  \item \textbf{Parmesão Jovem} — 
-  \item \textbf{Gouda} — 
-  \item \textbf{Canastra Meia Cura} — 
+  \item \textbf{Parmesão Jovem} — Sabor mais suave que o parmesão envelhecido, com notas lácteas e levemente salgadas. Sua textura firme mas não ressecada harmoniza com cafés de moagem fina, onde a extração mais intensa encontra equilíbrio na cremosidade residual do queijo.
+  \item \textbf{Gouda} — Queijo de sabor adocicado e textura cremosa, com notas de caramelo que se desenvolvem durante a cura. Complementa perfeitamente cafés de moagem média-fina, onde a doçura natural do queijo realça as notas frutadas e equilibra possíveis amargor residual.
+  \item \textbf{Canastra Meia Cura} — Queijo artesanal brasileiro com sabor mais acentuado e notas picantes características. Sua personalidade marcante harmoniza com cafés de moagem média, criando um contraste interessante entre a rusticidade do queijo e a suavidade da extração.
 \end{itemize}
 
-\subsection{Bolos Citricos}
+\subsection{Bolos Cítricos}
 Descrição: Bolos feitos com farinha de trigo, sem adição de fermento químico.
 \begin{itemize}
-  \item \textbf{Laranja com calda} — 
-  \item \textbf{Limão} — 
-  \item \textbf{Tangerina com cobertura leve} — 
+  \item \textbf{Laranja com calda} — Bolo úmido com acidez equilibrada da laranja e doçura da calda, criando complexidade de sabores. A calda adiciona textura e intensifica os aromas cítricos, harmonizando perfeitamente com métodos de filtragem que preservam as notas delicadas e aromáticas do café.
+  \item \textbf{Limão} — Acidez mais pronunciada e refrescante, com notas cítricas intensas que despertam o paladar. Sua característica marcante complementa métodos de pressão (espresso), onde a intensidade do café encontra contraponto na vivacidade ácida do limão, criando equilíbrio gustativo.
+  \item \textbf{Tangerina com cobertura leve} — Sabor cítrico mais suave e doce, com cobertura que adiciona cremosidade sem mascarar os aromas. Harmoniza idealmente com métodos de imersão, onde o tempo de contato prolongado permite que as notas sutis do café se integrem com a delicadeza da tangerina.
 \end{itemize}
 
 
 % construindo a tabela com base nas descrições
+\section{Sistema Especialista: Desenvolvimento e Refinamentos}
+
+O sistema especialista desenvolvido em CLIPS utiliza uma abordagem baseada em frames (via \texttt{deftemplate}) combinada com regras de inferência para gerar recomendações personalizadas de harmonização para cada variedade de café.
+
+\subsection{Arquitetura do Sistema}
+O sistema é estruturado em três componentes principais:
+\begin{itemize}
+  \item \textbf{Templates (Frames):} Definem a estrutura dos fatos sobre variedades e recomendações
+  \item \textbf{Fatos Iniciais:} Base de conhecimento com as 12 variedades de café estudadas
+  \item \textbf{Regras de Inferência:} Conjunto de regras que geram recomendações baseadas nas características de cada variedade
+\end{itemize}
+
+\subsection{Lógica de Harmonização e Critérios de Desempate}
+Durante o desenvolvimento, identificou-se a necessidade de implementar critérios rigorosos para garantir harmonizações consistentes. O sistema foi refinado para produzir exatamente \textbf{uma harmonização de cada categoria} (pão, queijo e bolo) por variedade de café.
+
+\subsubsection{Mapeamento por Características}
+As harmonizações são determinadas através de três mapeamentos independentes:
+\begin{itemize}
+  \item \textbf{Pães:} Baseados exclusivamente no \emph{tipo de torra} (mapeamento 1:1)
+    \begin{itemize}
+      \item Clara → Pães integrais de fermentação natural
+      \item Clara a Média → Pães integrais de fermentação natural
+      \item Média → Pães integrais com castanhas e frutas secas  
+      \item Média a Média Escura → Pães integrais com sementes
+      \item Média a Escura → Pães integrais com sementes
+    \end{itemize}
+  \item \textbf{Queijos:} Baseados exclusivamente no \emph{tipo de moagem}
+    \begin{itemize}
+      \item Fina a média → Queijo semicurado parmesão jovem
+      \item Média a fina → Queijo semicurado gouda
+      \item Média → Queijo semicurado canastra meia cura
+      \item Média a Média-Grosseira → Queijo semicurado gouda
+    \end{itemize}
+  \item \textbf{Bolos:} Baseados no \emph{método de preparo} com sistema de prioridade
+\end{itemize}
+
+\subsubsection{Sistema de Prioridade para Desempate}
+Para resolver conflitos quando uma variedade possui múltiplos métodos de preparo, implementou-se um sistema de prioridade usando \texttt{salience} no CLIPS:
+
+\begin{enumerate}
+  \item \textbf{Pressão} (prioridade 30) → Bolo cítrico de limão
+  \item \textbf{Filtragem} (prioridade 20) → Bolo cítrico de laranja com calda  
+  \item \textbf{Imersão} (prioridade 10) → Bolo cítrico de tangerina com cobertura leve
+  \item \textbf{Comercial} (prioridade 5) → Bolo cítrico de limão
+\end{enumerate}
+
+Este sistema garante que, mesmo quando uma variedade suporta múltiplos métodos (como Mundo Novo: Imersão, Filtragem, Comercial), apenas um bolo seja selecionado com base na prioridade mais alta.
+
+\subsection{Prevenção de Duplicações}
+Cada regra de harmonização verifica se já existe qualquer item da mesma categoria antes de adicionar um novo, utilizando testes compostos com operadores lógicos:
+\begin{lstlisting}[language=Lisp]
+(test (not (or (member$ "Pão tipo 1" $?h)
+               (member$ "Pão tipo 2" $?h)
+               (member$ "Pão tipo 3" $?h))))
+\end{lstlisting}
+
+\subsection{Validação e Resultados}
+O sistema foi testado e validado através da execução completa sobre todas as 12 variedades de café. O mapeamento segue rigorosamente a tabela de características, com cada regra correspondendo exatamente a uma linha específica da tabelade referência.
+
+Os resultados demonstram que:
+\begin{itemize}
+  \item \textbf{Consistência:} Todas as variedades produzem exatamente 3 harmonizações (1 pão + 1 queijo + 1 bolo)
+  \item \textbf{Determinismo:} O sistema de prioridade elimina ambiguidades, gerando sempre o mesmo resultado para a mesma entrada
+  \item \textbf{Cobertura Completa:} Todas as 12 variedades recebem recomendações apropriadas baseadas em suas características específicas
+  \item \textbf{Rastreabilidade:} Cada harmonização pode ser rastreada diretamente para uma linha específica da tabela
+\end{itemize}
+
+\subsubsection{Exemplos de Harmonizações Geradas}
+O sistema produz recomendações como:
+\begin{itemize}
+  \item \textbf{Robusta} (Torra: Média a Escura, Moagem: Fina a média, Métodos: Pressão/Comercial) → Pães integrais com sementes + Queijo semicurado parmesão jovem + Bolo cítrico de limão
+  \item \textbf{Geisha} (Torra: Clara, Moagem: Média a fina, Métodos: Filtragem) → Pães integrais de fermentação natural + Queijo semicurado gouda + Bolo cítrico de laranja com calda
+  \item \textbf{Mundo Novo} (Torra: Média a Média Escura, Moagem: Média a Média-Grosseira, Métodos: Imersão/Filtragem/Comercial) → Pães integrais com sementes + Queijo semicurado gouda + Bolo cítrico de laranja com calda (Filtragem tem prioridade sobre Imersão e Comercial)
+\end{itemize}
+
 \section{Resumo das Variedades em Tabela}
 
 % TODO: Aqui deve ser inserida a tabela com as variedades de café e as comidas selecionadas
