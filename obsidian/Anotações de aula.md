@@ -161,3 +161,50 @@ Algoritmo A* assegura a melhor solução, tendo em vista a admissibilidade da he
 [[06-busca.pdf#page=34&selection=0,0,0,16&color=yellow|06-busca, p.34]]
 
 # 7 - Jogos
+
+# 8 - Agent Oriented Programming with Jason
+[[08-aop.pdf]]
+## Definição de sistemas multiagentes
+[[08-aop.pdf#page=3&selection=6,0,7,20&color=yellow|08-aop, p.3]]
+Existe uma estrutura de organização entre os agentes autônomos, na qual cada um tem uma função e eles se complementam.
+
+![[08-aop.pdf#page=9&rect=5,5,342,267&color=yellow|08-aop, p.4]]
+### Agentes
+- software/hardware
+- coarse-grain/small-grain
+- heterogeneous/homogeneous
+- reactive/pro-active entities
+### Ambiente
+- virtual/physical
+- passive/active
+- deterministic/non deterministic
+- ...
+### Interação
+É o motor da dinâmica dos sistemas multiagentes
+- direct/indirect between agents
+- interaction between agent and environment
+### Organização
+ - pre-defined/emergent
+ - static/adaptive
+ - open/closed (relacionada a entrada e saída de agentes)
+ - ...
+## Abstração em sistemas multiagentes
+### Individual level 
+- autonomy, situatedness
+- beliefs, desires, goals, intentions, plans 
+- sense/reason/act, reactive/pro-active behaviour 
+### Environment level 
+- resources and services that agents can access and control 
+- sense/act 
+### Social level 
+- cooperation, competition, parasite, symbiosys, comensalism
+- languages
+- protocols 
+### Organisation level 
+- coordination, regulation patterns, norms, obligations, rights
+## Agentes Jason
+[[08-agentes_jason.pdf]]
+![[08-agentes_jason.pdf#page=6&rect=4,56,360,255&color=yellow|09-agentes_jason, p.6]]
+## Arquitetura BDI
+![[08-aop.pdf#page=17&rect=6,62,331,266&color=yellow|08-aop, p.12]]
+
