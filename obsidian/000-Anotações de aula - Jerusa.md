@@ -206,5 +206,6 @@ Existe uma estrutura de organização entre os agentes autônomos, na qual cada 
 [[08-agentes_jason.pdf]]
 ![[08-agentes_jason.pdf#page=6&rect=4,56,360,255&color=yellow|09-agentes_jason, p.6]]
 ## Arquitetura BDI
-![[08-aop.pdf#page=17&rect=6,62,331,266&color=yellow|08-aop, p.12]]
+  ![[08-aop.pdf#page=17&rect=6,62,331,266&color=yellow|08-aop, p.12]]
+
 

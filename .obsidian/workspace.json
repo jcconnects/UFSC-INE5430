@@ -11,30 +11,10 @@
             "id": "118f076e1ea8b938",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "obsidian/Anotações de aula.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "Anotações de aula"
-            }
-          },
-          {
-            "id": "383aa30b180dff09",
-            "type": "leaf",
-            "state": {
-              "type": "pdf",
-              "state": {
-                "file": "obsidian/08-aop.pdf",
-                "page": 17,
-                "left": -6,
-                "top": 276,
-                "zoom": 2.542477985861342
-              },
-              "icon": "lucide-file-text",
-              "title": "08-aop"
+              "title": "New tab"
             }
           }
         ]
@@ -186,20 +166,22 @@
       "mermaid-tools:Open Mermaid Toolbar": false
     }
   },
-  "active": "118f076e1ea8b938",
+  "active": "02d3e58c7df9a9de",
   "lastOpenFiles": [
-    "obsidian/08-aop.pdf",
-    "obsidian/08-agentes_jason.pdf",
-    "obsidian/Anotações de aula.md",
-    "obsidian/06-busca.pdf",
-    "obsidian/07-jogos.pdf",
-    "lista_1/references.bib",
-    "lista_1/main.tex",
-    "lista_1/main.pl",
-    "lista_1/main.prolog",
+    "obsidian/03-KR.pdf.md",
+    "obsidian/000-Anotações de aula - Jerusa.md",
+    "obsidian/100-Anotações de aula - Mauro.md",
+    "obsidian/008-aop.pdf",
+    "obsidian/008-agentes_jason.pdf",
+    "obsidian/007-jogos.pdf",
+    "obsidian/006-busca.pdf",
+    "obsidian/005-LogicaRC.pdf",
+    "obsidian/004-se_pos.pdf",
+    "obsidian/003-KR.pdf",
+    "obsidian/002-Exemplo.pdf",
+    "obsidian/001-Introducao.pdf",
+    "obsidian/Jerusa",
     "obsidian/[[05-LogicaRC.pdf.md",
-    "obsidian/04-se_pos.pdf",
-    "obsidian/05-LogicaRC.pdf",
     "Estratégia.md",
     "[[.md",
     "obsidian/attachments/Anotações de aula - Exemplo de cortes min e max.png",
@@ -223,7 +205,6 @@
     "Logosofia/2025/2025-08-07 - Tertúlia - O Grande Espírito Precursor de Rumos e Destinos.md",
     "Anotações Notion/Ago - Semana 2 fd7e189562774390878b9d937bdc0914.md",
     "Mundo Comum/Alto Impacto Empresarial.md",
-    "Logosofia/2025/Diárias/2025-08-09 - 5 Simpósio Docente - A Divina Arquitetura Do Ser Humano Frente Às Correntes Ideológicas.md",
     "Logosofia/2025/attachments/2025-07-17 - Tertúlia - Técnica para analisar as Correntes Mentais.jpg",
     "Logosofia/2025/attachments/2025-03-11 - Exp - Agenda.png",
     "Logosofia/2025/attachments/2025-02-13 - Par - Imagem Capitão.png",
