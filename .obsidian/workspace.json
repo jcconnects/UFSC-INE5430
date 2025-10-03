@@ -11,13 +11,34 @@
             "id": "118f076e1ea8b938",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "obsidian/100-Anotações de aula - Mauro.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "New tab"
+              "title": "100-Anotações de aula - Mauro"
+            }
+          },
+          {
+            "id": "283e4941faae34b5",
+            "type": "leaf",
+            "state": {
+              "type": "pdf",
+              "state": {
+                "file": "obsidian/102-raciocinio_probabilistico.pdf",
+                "page": 30,
+                "left": -11,
+                "top": 4,
+                "zoom": 1.4458333333333333
+              },
+              "icon": "lucide-file-text",
+              "title": "102-raciocinio_probabilistico"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -166,21 +187,21 @@
       "mermaid-tools:Open Mermaid Toolbar": false
     }
   },
-  "active": "02d3e58c7df9a9de",
+  "active": "283e4941faae34b5",
   "lastOpenFiles": [
-    "obsidian/03-KR.pdf.md",
-    "obsidian/000-Anotações de aula - Jerusa.md",
     "obsidian/100-Anotações de aula - Mauro.md",
-    "obsidian/008-aop.pdf",
+    "obsidian/102-raciocinio_probabilistico.pdf",
+    "obsidian/101-tratamento_de_incertezas.pdf",
+    "obsidian/000-Anotações de aula - Jerusa.md",
     "obsidian/008-agentes_jason.pdf",
+    "obsidian/008-aop.pdf",
+    "obsidian/004-se_pos.pdf",
+    "obsidian/003-KR.pdf",
+    "obsidian/03-KR.pdf.md",
     "obsidian/007-jogos.pdf",
     "obsidian/006-busca.pdf",
     "obsidian/005-LogicaRC.pdf",
-    "obsidian/004-se_pos.pdf",
-    "obsidian/003-KR.pdf",
     "obsidian/002-Exemplo.pdf",
-    "obsidian/001-Introducao.pdf",
-    "obsidian/Jerusa",
     "obsidian/[[05-LogicaRC.pdf.md",
     "Estratégia.md",
     "[[.md",
@@ -204,7 +225,6 @@
     "Logosofia/2025/2025-08-07 - SIP - Reunião 5 -  A Seleção e o Sentimentalismo.md",
     "Logosofia/2025/2025-08-07 - Tertúlia - O Grande Espírito Precursor de Rumos e Destinos.md",
     "Anotações Notion/Ago - Semana 2 fd7e189562774390878b9d937bdc0914.md",
-    "Mundo Comum/Alto Impacto Empresarial.md",
     "Logosofia/2025/attachments/2025-07-17 - Tertúlia - Técnica para analisar as Correntes Mentais.jpg",
     "Logosofia/2025/attachments/2025-03-11 - Exp - Agenda.png",
     "Logosofia/2025/attachments/2025-02-13 - Par - Imagem Capitão.png",

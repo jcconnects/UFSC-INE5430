@@ -1,13 +1,4 @@
 {
-  "app:toggle-left-sidebar": [
-    {
-      "modifiers": [
-        "Ctrl",
-        "Shift"
-      ],
-      "key": "S"
-    }
-  ],
   "pdf-plus:copy-link-to-selection": [
     {
       "modifiers": [
@@ -15,6 +6,15 @@
         "Mod"
       ],
       "key": "C"
+    }
+  ],
+  "app:toggle-left-sidebar": [
+    {
+      "modifiers": [
+        "Mod",
+        "Shift"
+      ],
+      "key": "E"
     }
   ]
 }
