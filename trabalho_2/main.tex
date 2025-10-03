@@ -1,0 +1,141 @@
+% !TeX program = lualatex
+% This document requires LuaLaTeX for compilation
+
+\documentclass[a4paper,12pt]{article}
+
+% Engine detection and compatibility check
+\RequirePackage{iftex}
+\ifLuaTeX
+  % Document is being compiled with LuaTeX - proceed normally
+\else
+  \PackageError{main}{This document requires LuaLaTeX for compilation.
+    Please use: lualatex main.tex}
+    {This document uses fontspec and other LuaTeX-specific features.}
+\fi
+
+\usepackage{fontspec}
+\usepackage[brazilian]{babel}
+
+% Font configuration for LuaTeX
+\setmainfont{Latin Modern Roman}
+\setsansfont{Latin Modern Sans}
+\setmonofont{Latin Modern Mono}
+
+\usepackage{amsmath} % Para equações matemáticas
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{hyperref}
+\usepackage[sort,numbers]{natbib}
+\usepackage{parskip}
+\usepackage{longtable}
+\usepackage{xcolor}
+\usepackage{tabularx}
+\setlength{\marginparwidth}{2cm}
+\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+\usepackage{comment}
+\usepackage{graphicx} % Para resizebox
+\usepackage{array} % Para colunas com largura fixa
+\usepackage{listings}
+\usepackage{siunitx} % For \si{\micro\second}
+\usepackage[acronym,nonumberlist]{glossaries}
+\usepackage{placeins}
+
+% Configuring listings for code and log display
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  breakatwhitespace=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny,
+  keywordstyle=\color{blue},
+  commentstyle=\color{gray},
+  showstringspaces=false,
+  tabsize=2,
+  extendedchars=true
+}
+
+
+\title{Trabalho 2 - Algoritmos Genéticos - Problema das Oito Rainhas}
+\author{André Thiago Pfleger \\  Gustavo Girotto \\ João Pedro Schmidt Cordeiro}
+\date{\today}
+
+\begin{document}
+
+\begin{titlepage}
+   \begin{center}
+      \textsc{Universidade Federal de Santa Catarina} \\
+      \textsc{Centro Tecnológico} \\
+      \textsc{Departamento de Informática e Estatística} \\[4cm]
+
+      \textbf{\Large{INE5430 - Inteligência Artificial}} \\[2cm]
+
+      \textbf{\huge{Trabalho 2 - Algoritmos Genéticos - Problema das Oito Rainhas}} \\[3cm]
+
+      André Thiago Pfleger \\
+      Gustavo Girotto \\
+      João Pedro Schmidt Cordeiro \\
+      
+      \vfill
+      
+      {Florianópolis} \\
+      {\today}
+   \end{center}
+\end{titlepage}
+
+\section{Introdução}
+\label{ch:introducao}
+
+Este trabalho apresenta o desenvolvimento de um algoritmo genético para encontrar a solução do problema da oito rainhas.
+
+O objetivo principal é demonstrar a aplicação prática de algoritmos genéticos para encontrar a solução do problema da oito rainhas.
+
+
+\section{Problema}
+\label{ch:problema}
+
+O problema das oito rainhas é um quebra-cabeça matemático e um exemplo clássico de problema de satisfação de restrições, que consiste em posicionar oito rainhas em um tabuleiro de xadrez de 8x8 casas de tal forma que nenhuma rainha possa atacar a outra. Para que isso seja possível, não pode haver duas ou mais rainhas na mesma linha, coluna ou diagonal \cite{wiki:8queens}.
+
+O problema foi originalmente proposto em 1848 pelo enxadrista Max Bezzel. Desde então, tem sido estudado por muitos matemáticos e cientistas da computação, servindo como um problema comum para testar algoritmos de busca e otimização.
+
+\section{Implementação}
+\label{ch:implementacao}
+
+A implementação do algoritmo genético foi feita em Python usando a biblioteca \texttt{pygad} \cite{pygad}.
+
+\subsection{Cromossomo}
+\label{sec:cromossomo}
+
+O cromossomo é a representação do problema. Neste caso, o cromossomo é uma lista de 8 inteiros, onde cada inteiro representa a coluna da rainha na linha correspondente.
+
+\subsection{População}
+\label{sec:populacao}
+
+A população é o conjunto de cromossomos. Neste caso, a população é um conjunto de 50 cromossomos.
+
+\subsection{Função de Fitness}
+\label{sec:funcao_fitness}
+
+A função de fitness é a função que avalia a qualidade de um cromossomo. Neste caso, a função de fitness é a soma do número de pares de rainhas que se atacam.
+
+\subsection{Critério para Seleção Cruzamento e Mutação}
+\label{sec:critario_selecao_cruzamento_mutacao}
+
+<Critério para seleção cruzamento e mutação(e as respectivas taxas)>
+
+\subsection{Critério de Parada e Plots de Execução}
+\label{sec:critario_parada_plots_execucao}
+
+<Critério de parada e plots de execução, mostrando a convergência do algoritmo e melhor indivíduo da população.>
+
+O critério de parada é a condição que determina quando o algoritmo deve parar. Neste caso, o algoritmo deve parar quando encontrar uma solução satisfatória.
+
+\section{Conclusão}
+\label{ch:conclusao}
+
+<Considerações sobre a implementação, dificuldades encontradas e percepções pessoais.>
+
+\bibliographystyle{IEEEtran}
+\bibliography{ref}
+
+\end{document}
