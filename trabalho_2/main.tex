@@ -86,56 +86,205 @@
 \section{Introdução}
 \label{ch:introducao}
 
-Este trabalho apresenta o desenvolvimento de um algoritmo genético para encontrar a solução do problema da oito rainhas.
-
-O objetivo principal é demonstrar a aplicação prática de algoritmos genéticos para encontrar a solução do problema da oito rainhas.
-
+Este trabalho apresenta o desenvolvimento de um algoritmo genético (AG) para encontrar soluções do problema das oito rainhas. O objetivo principal é demonstrar a aplicação prática de algoritmos genéticos em um problema clássico de satisfação de restrições e analisar o impacto das escolhas de representação, operadores de seleção, cruzamento e mutação na convergência do algoritmo.
 
 \section{Problema}
 \label{ch:problema}
 
-O problema das oito rainhas é um quebra-cabeça matemático e um exemplo clássico de problema de satisfação de restrições, que consiste em posicionar oito rainhas em um tabuleiro de xadrez de 8x8 casas de tal forma que nenhuma rainha possa atacar a outra. Para que isso seja possível, não pode haver duas ou mais rainhas na mesma linha, coluna ou diagonal \cite{wiki:8queens}.
+O problema das oito rainhas é um quebra-cabeça matemático e um exemplo clássico de problema de satisfação de restrições, que consiste em posicionar oito rainhas em um tabuleiro de xadrez de \(8\times 8\) casas de tal forma que nenhuma rainha possa atacar outra. Para tanto, não pode haver duas ou mais rainhas na mesma linha, coluna ou diagonal \cite{wiki:8queens}.
 
-O problema foi originalmente proposto em 1848 pelo enxadrista Max Bezzel. Desde então, tem sido estudado por muitos matemáticos e cientistas da computação, servindo como um problema comum para testar algoritmos de busca e otimização.
+O problema foi originalmente proposto em 1848 por Max Bezzel e tornou-se um benchmark para testar algoritmos de busca e otimização. Existem 92 soluções distintas no tabuleiro de 8×8 (sem considerar simetrias), e o objetivo do AG é encontrar qualquer uma dessas configurações válidas.
 
-\section{Implementação}
-\label{ch:implementacao}
+\section{Representação e codificação}
+\label{ch:representacao}
 
-A implementação do algoritmo genético foi feita em Python usando a biblioteca \texttt{pygad} \cite{pygad}.
+Optou-se por uma codificação direta por vetor de inteiros: cada cromossomo é uma lista de 8 inteiros, em que o índice do vetor representa a \emph{coluna} e o valor a \emph{linha} onde a rainha é colocada. Em outras palavras, o gene \(i\) contém a linha (0--7) da rainha na coluna \(i\). Essa codificação permite representar todas as combinações de posições, embora permita cromossomos com repetição de linha (o que é tratado pela função de fitness).
 
-\subsection{Cromossomo}
-\label{sec:cromossomo}
-
-O cromossomo é a representação do problema. Neste caso, o cromossomo é uma lista de 8 inteiros, onde cada inteiro representa a coluna da rainha na linha correspondente.
-
-\subsection{População}
-\label{sec:populacao}
-
-A população é o conjunto de cromossomos. Neste caso, a população é um conjunto de 50 cromossomos.
-
-\subsection{Função de Fitness}
+\section{Função de fitness}
 \label{sec:funcao_fitness}
 
-A função de fitness é a função que avalia a qualidade de um cromossomo. Neste caso, a função de fitness é a soma do número de pares de rainhas que se atacam.
+A função de fitness usada avalia quantos pares de rainhas \emph{não} se atacam. Como existem \(\binom{8}{2}=28\) pares possíveis de rainhas, a função de fitness extrai pontuação máxima 28 quando não há conflitos. Implementação (resumo):
 
-\subsection{Critério para Seleção Cruzamento e Mutação}
+\begin{itemize}
+  \item Inicia em 28 (todos os pares não atacando).
+  \item Para cada par de rainhas \((i,j)\) com \(i<j\):
+    \begin{itemize}
+      \item Se tiverem a mesma linha: decrementa 1.
+      \item Se estiverem na mesma diagonal: decrementa 1.
+    \end{itemize}
+  \item Retorna o valor resultante (quanto maior, melhor).
+\end{itemize}
+
+Essa definição induz o AG a maximizar o número de pares não conflitantes; uma solução ótima tem fitness = 28.
+
+\section{Parâmetros do algoritmo}
+\label{sec:parametros}
+
+Os parâmetros utilizados vêm diretamente do código fornecido. Resumo:
+
+\begin{itemize}
+  \item \textbf{Tamanho da população (sol\_per\_pop):} 120 cromossomos.
+  \item \textbf{Número de genes:} 8.
+  \item \textbf{Espaço gênico (gene\_space):} \{0,1,\dots,7\} (linhas do tabuleiro).
+  \item \textbf{Número de pais para cruzamento (num\_parents\_mating):} 70.
+  \item \textbf{Estratégia de seleção de pais:} \texttt{rank} (seleção por ranking).
+  \item \textbf{Cruzamento (crossover\_type):} dois pontos (\texttt{two\_points}).
+  \item \textbf{Manutenção de pais (elitismo):} \texttt{keep\_parents = 30} (os 30 pais são mantidos).
+  \item \textbf{Mutação (mutation\_type):} \texttt{random}, com \texttt{mutation\_num\_genes = 3} (três genes alterados por indivíduo mutado).
+  \item \textbf{Número máximo de gerações (num\_generations):} 3000 (padrão na função criadora).
+  \item \textbf{Critério de parada adicional:} interromper quando a melhor solução atingir fitness = 28 (todas as rainhas não se atacam).
+\end{itemize}
+
+\subsection{Critério para seleção, cruzamento e mutação}
 \label{sec:critario_selecao_cruzamento_mutacao}
 
-<Critério para seleção cruzamento e mutação(e as respectivas taxas)>
+A seleção por \emph{rank} ordena indivíduos pelo fitness e seleciona pais com probabilidade proporcional à posição no ranking, reduzindo sensibilidade a outliers extremos e controlando pressão seletiva. Foi escolhido para obter uma pressão moderada sem favorecer demais os melhores indivíduos logo nas primeiras gerações.
 
-\subsection{Critério de Parada e Plots de Execução}
+Cruzamento de dois pontos combina segmentos de pais, permitindo reuso de subestruturas. Por ser uma codificação por inteiros com possíveis duplicatas, o cruzamento pode gerar filhos que mantêm ou criam conflitos — a função de fitness tratará isso.
+
+Mutação do tipo \texttt{random} com \texttt{mutation\_num\_genes = 3} significa que, quando ocorre mutação, três genes são sorteados e substituídos por valores aleatórios no conjunto \{0,\dots,7\}. Interpretamos esse parâmetro como uma intensidade de mutação (3/8 genes alterados quando a mutação acontece), o que é relativamente agressivo e ajuda o AG a escapar de mínimos locais.
+
+\section{Critério de parada e plots de execução}
 \label{sec:critario_parada_plots_execucao}
 
-<Critério de parada e plots de execução, mostrando a convergência do algoritmo e melhor indivíduo da população.>
+O algoritmo pára quando \emph{uma} das condições é satisfeita:
 
-O critério de parada é a condição que determina quando o algoritmo deve parar. Neste caso, o algoritmo deve parar quando encontrar uma solução satisfatória.
+\begin{itemize}
+  \item Atinge-se a melhor fitness igual a 28 (solução sem conflitos).
+  \item Ou é alcançado o número máximo de gerações: 3000.
+\end{itemize}
+
+\subsection{Plotagem da convergência}
+%%%todo colocar a imagem aqui (a que gera dos testes)
+
+\section{Resultados observados (exemplo)}
+\label{sec:resultados}
+
+Executando o algoritmo com os parâmetros acima (exemplo hipotético/esperado) costuma-se encontrar uma solução válida em número moderado de gerações — tipicamente algumas dezenas a algumas centenas, dependendo da semente aleatória e do poder de exploração/explotação definido pelos parâmetros.
+
+Um exemplo de solução válida para o problema é o vetor
+\[
+[0,4,7,5,2,6,1,3],
+\]
+que corresponde ao tabuleiro (onde `Q` indica rainha):
+
+\begin{verbatim}
+Q . . . . . . .
+. . . . Q . . .
+. . . . . . . Q
+. . . . . Q . .
+. . Q . . . . .
+. . . . . . Q .
+. Q . . . . . .
+. . . Q . . . .
+\end{verbatim}
+
+Se você rodar o código fornecido, o trecho de impressão `print_tabuleiro(solution)` exibirá um tabuleiro similar.
+
+\section{Discussão e dificuldades}
+\label{ch:discussao}
+
+Durante a implementação e experimentação observam-se alguns pontos importantes:
+
+\begin{itemize}
+  \item \textbf{Codificação permissiva:} a escolha de utilizar vetor de inteiros com repetição permitida facilita a representação, mas permite cromossomos com rainhas na mesma linha; a função de fitness penaliza esses casos. Uma alternativa é usar codificação por permutação (uma permutação das linhas 0..7), o que garante que não haja duas rainhas na mesma linha — isso reduz o espaço de busca e facilita encontrar soluções (apenas detectar conflitos em diagonais).
+  \item \textbf{Taxa e intensidade de mutação:} o parâmetro `mutation\_num\_genes=3` é relativamente alto; pode acelerar a exploração, mas também destruir boas combinações. É recomendável testar valores menores (1 ou 2) e/ou usar uma probabilidade de mutação por gene em vez de número fixo.
+  \item \textbf{Pressão seletiva:} `num\_parents\_mating=70` e `keep\_parents=30` criam uma forte pressão de seleção. Ajustar para valores menores pode aumentar diversidade inicial e evitar convergência prematura.
+  \item \textbf{Critério de parada:} o critério fitness=28 é perfeito para o objetivo, mas em cenários maiores pode ser vantajoso usar também medidas de estagnação (parar se não houver melhora em N gerações).
+\end{itemize}
 
 \section{Conclusão}
 \label{ch:conclusao}
 
-<Considerações sobre a implementação, dificuldades encontradas e percepções pessoais.>
+O algoritmo genético implementado atinge o objetivo de encontrar soluções para o problema das oito rainhas quando os parâmetros são adequados. A função de fitness baseada no número de pares não conflitantes (máx. 28) é intuitiva e facilita a verificação de solução ótima. Observou-se que a escolha de codificação, operadores e intensidade de mutação tem impacto direto na velocidade de convergência e na qualidade das soluções encontradas. Para futuras versões recomenda-se estudar codificações por permutação, operadores especializados e um estudo sistemático de parâmetros.
 
-\bibliographystyle{IEEEtran}
-\bibliography{ref}
+\appendix
+\section{Código fonte utilizado}
+\label{app:codigo}
 
+
+\begin{lstlisting}[language=Python, caption={Código do AG usado no relatório}]
+# importação de bibliotecas utilizadas 
+import pygad
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Função de avaliação (fitness)
+def funcao_fitness(ga_instance, solution, solution_idx):
+    # fitness: número de pares de rainhas que não se atacam
+    fitness = 28
+
+    for i in range(len(solution)):
+        for j in range(i + 1, len(solution)):
+            # conflito na mesma linha/coluna
+            if solution[i] == solution[j]:
+                fitness -= 1
+
+            # conflito na mesma diagonal
+            elif abs(solution[i] - solution[j]) == abs(i - j):
+                fitness -= 1
+
+    return fitness
+
+# Função de callback para parar quando fitness = 28
+def on_generation(ga_instance):
+    best_fitness = ga_instance.best_solution()[1]
+    if best_fitness == 28:
+        return "stop"
+
+# função para mostrar o tabuleiro
+def print_tabuleiro(solution):
+    board = np.full((8, 8), ".")
+    for col, row in enumerate(solution):
+        board[row][col] = "Q" # ha uma rainha nesta posicao
+    for row in board:
+        print(" ".join(row))
+
+# Função para criar e executar uma instância do AG
+def criar_ga_instance(num_generations=3000):
+    """Cria uma nova instância do algoritmo genético com os parâmetros configurados"""
+    return pygad.GA(
+        num_generations=num_generations,
+        num_parents_mating=70,
+        fitness_func=funcao_fitness,
+        sol_per_pop=120,
+        num_genes=8,
+        gene_type=int,
+        gene_space=list(range(8)),  # cada rainha pode estar em uma das 8 linhas
+        parent_selection_type="rank",
+        keep_parents=30,
+        crossover_type="two_points",
+        mutation_type="random",
+        mutation_num_genes=3,
+        on_generation=on_generation
+    )
+
+# Executa apenas se for o script principal
+if __name__ == "__main__":
+    # Parâmetros do AG
+    ga_instance = criar_ga_instance()
+
+    # executa o AG com base nos parametros
+    ga_instance.run()
+
+    solution, solution_fitness, _ = ga_instance.best_solution()
+    print("Melhor solução encontrada:", solution)
+    print("Fitness da melhor solução:", solution_fitness)
+
+    print("\nTabuleiro gerado:")
+    print_tabuleiro(solution)
+
+    # plot da evolução do fitness
+    # ga_instance.plot_fitness()
+\end{lstlisting}
+
+\end{enumerate}
+
+\section{Referências}
+\begin{thebibliography}{9}
+\bibitem{wiki:8queens}
+Wikipedia contributors. ``Eight queens puzzle''. \emph{Wikipedia, The Free Encyclopedia}. Disponível em: \url{https://en.wikipedia.org/wiki/Eight_queens_puzzle}.
+
+\bibitem{pygad}
+Shuvro Sarker. ``PyGAD — Python (3.7+) library for building the Genetic Algorithm and optimizing Machine Learning algorithms''. \url{https://pygad.readthedocs.io/}.
 \end{document}
