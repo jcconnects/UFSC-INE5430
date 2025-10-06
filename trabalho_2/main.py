@@ -69,4 +69,4 @@ if __name__ == "__main__":
     print_tabuleiro(solution)
 
     # plot da evolução do fitness
-    # ga_instance.plot_fitness()
+    ga_instance.plot_fitness()
