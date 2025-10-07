@@ -1,0 +1,753 @@
+% !TeX program = lualatex
+% This document requires LuaLaTeX for compilation
+
+\documentclass[a4paper,12pt]{article}
+
+% Engine detection and compatibility check
+\RequirePackage{iftex}
+\ifLuaTeX
+  % Document is being compiled with LuaTeX - proceed normally
+\else
+  \PackageError{main}{This document requires LuaLaTeX for compilation.
+    Please use: lualatex main.tex}
+    {This document uses fontspec and other LuaTeX-specific features.}
+\fi
+
+\usepackage{fontspec}
+\usepackage[brazilian]{babel}
+
+% Font configuration for LuaTeX with proper encoding support
+\setmainfont{Latin Modern Roman}[
+  Ligatures=TeX,
+  Scale=1.0
+]
+\setsansfont{Latin Modern Sans}[
+  Ligatures=TeX,
+  Scale=MatchLowercase
+]
+\setmonofont{Latin Modern Mono}[
+  Ligatures=TeX,
+  Scale=MatchLowercase
+]
+
+% Ensure proper font encoding for math mode
+\usepackage{unicode-math}
+\setmathfont{Latin Modern Math}
+
+\usepackage{amsmath} % Para equações matemáticas
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{hyperref}
+\usepackage[sort,numbers]{natbib}
+\usepackage{parskip}
+\usepackage{longtable}
+\usepackage{xcolor}
+\usepackage{tabularx}
+\setlength{\marginparwidth}{2cm}
+\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+\usepackage{comment}
+\usepackage{graphicx} % Para resizebox
+\usepackage{array} % Para colunas com largura fixa
+\usepackage{listings}
+\usepackage{siunitx} % For \si{\micro\second}
+\usepackage[acronym,nonumberlist]{glossaries}
+\usepackage{placeins}
+\usepackage{float} % Para posicionamento exato com [H]
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+
+% Configuring listings for code and log display
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  breakatwhitespace=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny,
+  keywordstyle=\color{blue},
+  commentstyle=\color{gray},
+  showstringspaces=false,
+  tabsize=2,
+  extendedchars=true
+}
+
+% Configurações para melhor controle de floats (figuras e tabelas)
+\floatplacement{figure}{H}  % Força figuras a ficarem onde são definidas
+\floatplacement{table}{H}   % Força tabelas a ficarem onde são definidas
+\setcounter{topnumber}{2}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}
+\renewcommand{\topfraction}{0.85}
+\renewcommand{\bottomfraction}{0.85}
+\renewcommand{\textfraction}{0.15}
+\renewcommand{\floatpagefraction}{0.7}
+
+\title{Trabalho 3 - Raciocínio Probabilístico}
+\author{André Thiago Pfleger \\  Gustavo Girotto \\ João Pedro Schmidt Cordeiro}
+\date{\today}
+
+\begin{document}
+
+\begin{titlepage}
+   \begin{center}
+      \textsc{Universidade Federal de Santa Catarina} \\
+      \textsc{Centro Tecnológico} \\
+      \textsc{Departamento de Informática e Estatística} \\[4cm]
+
+      \textbf{\Large{INE5430 - Inteligência Artificial}} \\[2cm]
+
+      \textbf{\huge{Trabalho 3 - Raciocínio Probabilístico} \\[0.5cm]
+      \Large{Redes Bayesianas}} \\[3cm]
+
+      André Thiago Pfleger \\
+      Gustavo Girotto \\
+      João Pedro Schmidt Cordeiro \\
+      
+      \vfill
+      
+      {Florianópolis} \\
+      {\today}
+   \end{center}
+\end{titlepage}
+
+
+\section{Introdução}
+\label{ch:introducao}
+
+Este trabalho aborda a aplicação de Redes Bayesianas para modelagem e inferência probabilística em dois cenários distintos. As Redes Bayesianas são estruturas gráficas que representam relações de dependência condicional entre variáveis aleatórias, permitindo calcular probabilidades de eventos complexos através da decomposição em probabilidades mais simples.
+
+O trabalho está dividido em duas partes principais:
+
+\textbf{PARTE 1:} Utilização de uma Rede Bayesiana para detecção de fraudes em transações de cartão de crédito, onde calculamos probabilidades condicionais e conjuntas relacionadas ao comportamento de compra e características demográficas dos titulares.
+
+\textbf{PARTE 2:} Modelagem de um cenário sobre desonestidade acadêmica, onde construímos uma nova Rede Bayesiana a partir de dados textuais e realizamos inferências sobre o comportamento de estudantes.
+
+Em ambas as partes, demonstramos todos os cálculos de forma explícita, aplicando conceitos fundamentais como a regra da cadeia, teorema de Bayes, e inferência por enumeração.
+
+\section{PARTE 1 - Detecção de Fraude em Cartão de Crédito}
+\label{sec:parte1}
+
+\subsection{Descrição do Problema}
+
+Nesta parte, utilizamos uma Rede Bayesiana para modelar um sistema de detecção de fraudes em transações de cartão de crédito. O modelo considera características demográficas do titular (idade e sexo) e padrões de compra recentes (gasolina e créditos para celular) para inferir a probabilidade de uma transação ser fraudulenta.
+
+\subsection{Variáveis do Modelo}
+
+O modelo é composto pelas seguintes variáveis aleatórias:
+
+\begin{itemize}
+    \item \textbf{F (Fraude):} Indica se a transação é fraudulenta. Domínio: $\{sim, não\}$
+    \item \textbf{I (Idade):} Faixa etária do titular. Domínio: $\{<30, 30-50, >50\}$
+    \item \textbf{S (Sexo):} Sexo do titular. Domínio: $\{masculino, feminino\}$
+    \item \textbf{G (Gasolina):} Indica se houve compra de gasolina nas últimas 24h. Domínio: $\{sim, não\}$
+    \item \textbf{C (Crédito para Celular):} Indica se houve compra de créditos para celular nas últimas 24h. Domínio: $\{sim, não\}$
+\end{itemize}
+
+\subsection{Estrutura da Rede Bayesiana}
+
+A estrutura de dependência da rede é definida da seguinte forma:
+
+\begin{itemize}
+    \item As variáveis \textbf{F} (Fraude), \textbf{I} (Idade) e \textbf{S} (Sexo) são variáveis raiz (independentes entre si).
+    \item A variável \textbf{G} (Gasolina) depende apenas de \textbf{F} (Fraude).
+    \item A variável \textbf{C} (Crédito para Celular) depende de \textbf{F} (Fraude), \textbf{I} (Idade) e \textbf{S} (Sexo).
+\end{itemize}
+
+Esta estrutura reflete a hipótese de que padrões de compra (G e C) são influenciados pelo estado de fraude e, no caso de créditos para celular, também por características demográficas.
+
+\subsection{Tabelas de Probabilidade Condicional (CPTs)}
+
+As distribuições de probabilidade que definem o modelo são apresentadas a seguir:
+
+\subsubsection{Distribuições Marginais}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|}
+\hline
+\textbf{F} & \textbf{P(F)} (\%) \\
+\hline
+sim & 0,1 \\
+não & 99,9 \\
+\hline
+\end{tabular}
+\caption{Distribuição a priori de Fraude}
+\end{table}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|}
+\hline
+\textbf{I} & \textbf{P(I)} (\%) \\
+\hline
+$<$ 30 & 25 \\
+30-50 & 40 \\
+$>$ 50 & 35 \\
+\hline
+\end{tabular}
+\caption{Distribuição de Idade}
+\end{table}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|}
+\hline
+\textbf{S} & \textbf{P(S)} (\%) \\
+\hline
+masculino & 50 \\
+feminino & 50 \\
+\hline
+\end{tabular}
+\caption{Distribuição de Sexo}
+\end{table}
+
+\subsubsection{Probabilidades Condicionais}
+
+% Break before table
+\clearpage
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{F} & \textbf{G=sim} & \textbf{G=não} \\
+\hline
+sim & 20 & 80 \\
+não & 1 & 99 \\
+\hline
+\end{tabular}
+\caption{$P(G \mid F)$ - Probabilidade de compra de gasolina dado o estado de fraude (\%)}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{F} & \textbf{I} & \textbf{S} & \textbf{C=sim} & \textbf{C=não} \\
+\hline
+sim & $<$ 30 & masculino & 95 & 5 \\
+sim & $<$ 30 & feminino & 95 & 5 \\
+sim & 30-50 & masculino & 95 & 5 \\
+sim & 30-50 & feminino & 95 & 5 \\
+sim & $>$ 50 & masculino & 95 & 5 \\
+sim & $>$ 50 & feminino & 95 & 5 \\
+\hline
+não & $<$ 30 & masculino & 80 & 20 \\
+não & $<$ 30 & feminino & 75 & 25 \\
+não & 30-50 & masculino & 75 & 25 \\
+não & 30-50 & feminino & 75 & 25 \\
+não & $>$ 50 & masculino & 50 & 50 \\
+não & $>$ 50 & feminino & 60 & 40 \\
+\hline
+\end{tabular}
+\caption{$P(C \mid F, I, S)$ - Probabilidade de compra de crédito para celular (\%)}
+\end{table}
+
+\subsection{Questões e Cálculos}
+
+\subsubsection{Questão 1: \texorpdfstring{$P(G=\text{não} \mid F=\text{sim})$}{P(G=não | F=sim)}}
+
+\textbf{Objetivo:} Calcular a probabilidade de não ter havido uma compra de gasolina, dado que a transação é uma fraude.
+
+\textbf{Solução:}
+
+Este valor pode ser lido diretamente da Tabela 4 de probabilidades condicionais $P(G \mid F)$:
+
+\begin{align}
+P(G=\text{não} \mid F=\text{sim}) = 0,80 = 80\%
+\end{align}
+
+\textbf{Resposta:} A probabilidade de não haver compra de gasolina dado que há fraude é de \textbf{80\%}.
+
+\subsubsection{Questão 2: \texorpdfstring{$P(F=\text{sim}, G=\text{sim}, I>50, S=\text{fem}, C=\text{não})$}{P(F=sim, G=sim, I>50, S=fem, C=não)}}
+
+\textbf{Objetivo:} Calcular a probabilidade conjunta de a transação ser fraudulenta, haver compra de gasolina, o titular ter mais de 50 anos, ser do sexo feminino e não haver compra de crédito para celular.
+
+\textbf{Solução:}
+
+Utilizamos a regra da cadeia para Redes Bayesianas, que permite decompor a probabilidade conjunta de acordo com a estrutura da rede:
+
+\begin{align}
+P(F, G, I, S, C) &= P(F) \times P(I) \times P(S) \times P(G \mid F) \times P(C \mid F, I, S)
+\end{align}
+
+Substituindo os valores específicos:
+
+\begin{align}
+&P(F=\text{sim}, G=\text{sim}, I>50, S=\text{fem}, C=\text{não}) = \nonumber \\
+&\quad P(F=\text{sim}) \times P(I>50) \times P(S=\text{fem}) \times \nonumber \\
+&\quad P(G=\text{sim} \mid F=\text{sim}) \times P(C=\text{não} \mid F=\text{sim}, I>50, S=\text{fem})
+\end{align}
+
+Extraindo os valores das tabelas:
+\begin{itemize}
+    \item $P(F=\text{sim}) = 0,001$ (Tabela 1)
+    \item $P(I>50) = 0,35$ (Tabela 2)
+    \item $P(S=\text{fem}) = 0,50$ (Tabela 3)
+    \item $P(G=\text{sim} \mid F=\text{sim}) = 0,20$ (Tabela 4)
+    \item $P(C=\text{não} \mid F=\text{sim}, I>50, S=\text{fem}) = 0,05$ (Tabela 5)
+\end{itemize}
+
+Calculando:
+
+\begin{align}
+P &= 0,001 \times 0,35 \times 0,50 \times 0,20 \times 0,05 \\
+P &= 0,001 \times 0,35 \times 0,50 \times 0,01 \\
+P &= 0,00000175 \\
+P &= 1,75 \times 10^{-6}
+\end{align}
+
+\textbf{Resposta:} A probabilidade conjunta é de \textbf{$1,75 \times 10^{-6}$} ou \textbf{0,000175\%}.
+
+\subsubsection{Questão 3: \texorpdfstring{$P(G=\text{sim})$}{P(G=sim)}}
+
+\textbf{Objetivo:} Calcular a probabilidade total de haver uma compra de gasolina nas últimas 24 horas.
+
+\textbf{Solução:}
+
+Para calcular esta probabilidade marginal, precisamos marginalizar sobre todas as outras variáveis das quais G pode depender através da rede. Utilizamos a inferência por enumeração:
+
+\begin{align}
+P(G=\text{sim}) = \sum_{F,I,S} P(G=\text{sim} \mid F) \times P(F) \times P(I) \times P(S)
+\end{align}
+
+Como F, I e S são independentes, podemos expandir a soma sobre todos os estados possíveis. O cálculo detalhado foi realizado computacionalmente (ver Apêndice) e envolve somar 12 termos (2 estados de F × 3 estados de I × 2 estados de S).
+
+Principais contribuições ao cálculo:
+\begin{itemize}
+    \item Quando há fraude (F=sim): contribuição muito pequena devido a $P(F=\text{sim})=0,001$
+    \item Quando não há fraude (F=não): contribuição dominante, especialmente com $P(G=\text{sim} \mid F=\text{não})=0,01$
+\end{itemize}
+
+\textbf{Resposta:} $P(G=\text{sim}) = \textbf{0,01019} = \textbf{1,019\%}$
+
+\subsubsection{Questão 4: \texorpdfstring{$P(C=\text{sim})$}{P(C=sim)}}
+
+\textbf{Objetivo:} Calcular a probabilidade total de haver uma compra de créditos para celular nas últimas 24 horas.
+
+\textbf{Solução:}
+
+Semelhante à questão anterior, utilizamos inferência por enumeração, mas agora C depende de F, I e S:
+
+\begin{align}
+P(C=\text{sim}) = \sum_{F,I,S} P(C=\text{sim} \mid F,I,S) \times P(F) \times P(I) \times P(S)
+\end{align}
+
+Neste caso, a dependência de C com relação a I e S (além de F) resulta em diferentes probabilidades condicionais para cada combinação de estados. O cálculo completo (ver Apêndice) mostra que:
+
+\begin{itemize}
+    \item Compras de crédito são muito comuns quando não há fraude (variando de 50\% a 80\% dependendo da demografia)
+    \item Quando há fraude, a probabilidade é sempre alta (95\%), mas a baixa probabilidade de fraude (0,1\%) faz sua contribuição ser mínima
+\end{itemize}
+
+\textbf{Resposta:} $P(C=\text{sim}) = \textbf{0,6865} = \textbf{68,65\%}$
+
+\subsubsection{Questão 5: \texorpdfstring{$P(C=\text{sim} \mid G=\text{sim})$}{P(C=sim | G=sim)}}
+
+\textbf{Objetivo:} Calcular a probabilidade de haver compra de créditos para celular, dado que houve compra de gasolina.
+
+\textbf{Solução:}
+
+Aplicamos a definição de probabilidade condicional:
+
+\begin{align}
+P(C=\text{sim} \mid G=\text{sim}) = \frac{P(C=\text{sim}, G=\text{sim})}{P(G=\text{sim})}
+\end{align}
+
+O denominador $P(G=\text{sim}) = 0,01019$ já foi calculado na Questão 3.
+
+Para o numerador, precisamos calcular a probabilidade conjunta $P(C=\text{sim}, G=\text{sim})$. Como C e G são \textbf{condicionalmente independentes dado F}, podemos escrever:
+
+\begin{align}
+P(C=\text{sim}, G=\text{sim}) = \sum_{F,I,S} P(C=\text{sim} \mid F,I,S) \times P(G=\text{sim} \mid F) \times P(F) \times P(I) \times P(S)
+\end{align}
+
+Cálculos detalhados (ver Apêndice):
+\begin{itemize}
+    \item $P(C=\text{sim}, G=\text{sim}) = 0,0070456375$
+    \item $P(G=\text{sim}) = 0,01019$
+\end{itemize}
+
+Resultado final:
+\begin{align}
+P(C=\text{sim} \mid G=\text{sim}) = \frac{0,0070456375}{0,01019} = 0,6914
+\end{align}
+
+\textbf{Resposta:} $P(C=\text{sim} \mid G=\text{sim}) = \textbf{0,6914} = \textbf{69,14\%}$
+
+\textbf{Interpretação:} Dado que houve compra de gasolina, a probabilidade de haver também compra de crédito para celular é de 69,14\%, ligeiramente superior à probabilidade marginal de 68,65\%. Isso sugere uma leve correlação positiva entre essas compras.
+
+\subsubsection{Questão 6: \texorpdfstring{$P(F=\text{sim} \mid C=\text{sim}, G=\text{não})$}{P(F=sim | C=sim, G=não)}}
+
+\textbf{Objetivo:} Calcular a probabilidade de a transação ser uma fraude, dado que houve compra de créditos para celular mas não houve compra de gasolina.
+
+\textbf{Solução:}
+
+Esta é uma aplicação direta do Teorema de Bayes com evidências múltiplas:
+
+\begin{align}
+P(F=\text{sim} \mid C=\text{sim}, G=\text{não}) = \frac{P(C=\text{sim}, G=\text{não} \mid F=\text{sim}) \times P(F=\text{sim})}{P(C=\text{sim}, G=\text{não})}
+\end{align}
+
+\textbf{Passo 1:} Calcular $P(C=\text{sim}, G=\text{não} \mid F=\text{sim})$
+
+Como C e G são condicionalmente independentes dado F:
+\begin{align}
+P(C=\text{sim}, G=\text{não} \mid F=\text{sim}) &= P(G=\text{não} \mid F=\text{sim}) \times \nonumber \\
+&\quad \sum_{I,S} P(C=\text{sim} \mid F=\text{sim},I,S) \times P(I) \times P(S) \nonumber \\
+&= 0,80 \times 0,95 = 0,76
+\end{align}
+
+\textbf{Passo 2:} Calcular $P(C=\text{sim}, G=\text{não} \mid F=\text{não})$
+
+Similarmente:
+\begin{align}
+P(C=\text{sim}, G=\text{não} \mid F=\text{não}) = 0,6794
+\end{align}
+
+\textbf{Passo 3:} Calcular o numerador e denominador
+
+\begin{align}
+\text{Numerador} &= P(C=\text{sim}, G=\text{não} \mid F=\text{sim}) \times P(F=\text{sim}) \nonumber \\
+&= 0,76 \times 0,001 = 0,00076
+\end{align}
+
+\begin{align}
+\text{Denominador} &= P(C=\text{sim}, G=\text{não}) \nonumber \\
+&= P(C=\text{sim}, G=\text{não} \mid F=\text{sim}) \times P(F=\text{sim}) + \nonumber \\
+& \quad P(C=\text{sim}, G=\text{não} \mid F=\text{não}) \times P(F=\text{não}) \nonumber \\
+&= 0,76 \times 0,001 + 0,6794 \times 0,999 \nonumber \\
+&= 0,6795
+\end{align}
+
+\textbf{Passo 4:} Calcular a probabilidade final
+
+\begin{align}
+P(F=\text{sim} \mid C=\text{sim}, G=\text{não}) = \frac{0,00076}{0,6795} = 0,001119 = 0,112\%
+\end{align}
+
+\textbf{Resposta:} $P(F=\text{sim} \mid C=\text{sim}, G=\text{não}) = \textbf{0,001119} = \textbf{0,112\%}$
+
+\textbf{Interpretação:} Mesmo com a evidência de compra de crédito para celular sem compra de gasolina, a probabilidade de fraude continua muito baixa (0,112\%), apenas ligeiramente superior à probabilidade a priori de 0,1\%. Isso ocorre porque:
+\begin{itemize}
+    \item A probabilidade a priori de fraude já é muito baixa
+    \item O padrão observado (C=sim, G=não) também é comum em transações legítimas
+\end{itemize}
+
+\section{PARTE 2 - Rede Bayesiana sobre Desonestidade Acadêmica}
+\label{sec:parte2}
+
+\subsection{Descrição do Problema}
+
+Nesta parte, construímos uma Rede Bayesiana para modelar o comportamento de estudantes em relação à desonestidade acadêmica (cola em provas), considerando diferentes níveis de ensino e suas consequências percebidas.
+
+\subsection{Variáveis Aleatórias e seus Domínios}
+
+Definimos cinco variáveis aleatórias para representar o cenário:
+
+\begin{itemize}
+    \item \textbf{N (Nível de Ensino):} Nível educacional do estudante. 
+    
+    Domínio: $\{\text{Universitário}, \text{Secundário}, \text{Fundamental}\}$
+    
+    \item \textbf{C (Cola):} Indica se o estudante cola em provas. 
+    
+    Domínio: $\{\text{Sim}, \text{Não}\}$
+    
+    \item \textbf{V (Viu Colega Colando):} Indica se o estudante viu colegas colando. 
+    
+    Domínio: $\{\text{Sim}, \text{Não}\}$
+    
+    \item \textbf{E (Estuda):} Indica se o estudante estuda regularmente. 
+    
+    Domínio: $\{\text{Sim}, \text{Não}\}$
+    
+    \item \textbf{P (Sente-se Penalizado):} Indica se o estudante se sente penalizado na nota quando outros colam. 
+    
+    Domínio: $\{\text{Sim}, \text{Não}\}$
+\end{itemize}
+
+\subsection{Estrutura da Rede Bayesiana}
+
+A topologia da rede reflete as seguintes dependências causais:
+
+\begin{itemize}
+    \item \textbf{N (Nível)} é uma variável raiz (independente)
+    \item \textbf{C (Cola)} depende de N: diferentes níveis de ensino têm diferentes taxas de cola
+    \item \textbf{V (Viu Colega Colando)} depende de N: a percepção de cola varia por nível
+    \item \textbf{E (Estuda)} depende de N: hábitos de estudo variam por nível
+    \item \textbf{P (Sente-se Penalizado)} depende de C e E: sentir-se penalizado depende tanto de colar quanto de estudar
+\end{itemize}
+
+Estrutura gráfica:
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    node distance=2cm and 1.5cm,
+    every node/.style={circle, draw, minimum size=1.2cm, align=center, font=\small},
+    arrow/.style={->, >=stealth, thick}
+]
+    % Nó pai
+    \node (N) at (0,0) {N\\[2pt]\tiny Nível};
+    
+    % Nós filhos de N
+    \node (C) at (-2,-2.5) {C\\[2pt]\tiny Cola};
+    \node (V) at (0,-2.5) {V\\[2pt]\tiny Viu\\[-2pt]\tiny Colega};
+    \node (E) at (2,-2.5) {E\\[2pt]\tiny Estuda};
+    
+    % Nó final
+    \node (P) at (0,-5) {P\\[2pt]\tiny Sente-se\\[-2pt]\tiny Penalizado};
+    
+    % Arestas
+    \draw[arrow] (N) -- (C);
+    \draw[arrow] (N) -- (V);
+    \draw[arrow] (N) -- (E);
+    \draw[arrow] (C) -- (P);
+    \draw[arrow] (E) -- (P);
+\end{tikzpicture}
+\caption{Estrutura da Rede Bayesiana}
+\label{fig:bayesian-network}
+\end{figure}
+
+\subsection{Tabelas de Probabilidade Condicional e Distribuição Marginal}
+
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Nível (N)} & \textbf{P(N)} \\
+\hline
+Universitário & 0,10 (10\%) \\
+Secundário & 0,30 (30\%) \\
+Fundamental & 0,60 (60\%) \\
+\hline
+\end{tabular}
+\caption{Distribuição de Nível de Ensino}
+\end{table}
+
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{N} & \textbf{C=Sim} & \textbf{C=Não} \\
+\hline
+Universitário & 0,60 (60\%) & 0,40 (40\%) \\
+Secundário & 0,50 (50\%) & 0,50 (50\%) \\
+Fundamental & 0,20 (20\%) & 0,80 (80\%) \\
+\hline
+\end{tabular}
+\caption{$P(C \mid N)$ - Probabilidade de colar dado o nível}
+\end{table}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{N} & \textbf{V=Sim} & \textbf{V=Não} \\
+\hline
+Universitário & 0,70 (70\%) & 0,30 (30\%) \\
+Secundário & 0,50 (50\%) & 0,50 (50\%) \\
+Fundamental & 0,10 (10\%) & 0,90 (90\%) \\
+\hline
+\end{tabular}
+\caption{$P(V \mid N)$ - Probabilidade de ver colega colando dado o nível}
+\end{table}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{N} & \textbf{E=Sim} & \textbf{E=Não} \\
+\hline
+Universitário & 0,50 (50\%) & 0,50 (50\%) \\
+Secundário & 0,30 (30\%) & 0,70 (70\%) \\
+Fundamental & 0,20 (20\%) & 0,80 (80\%) \\
+\hline
+\end{tabular}
+\caption{$P(E \mid N)$ - Probabilidade de estudar dado o nível}
+\end{table}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{C} & \textbf{E} & \textbf{P=Sim} & \textbf{P=Não} \\
+\hline
+Sim & Sim & 0,10 (10\%) & 0,90 (90\%) \\
+Sim & Não & 0,80 (80\%) & 0,20 (20\%) \\
+Não & Sim & 0,90 (90\%) & 0,10 (10\%) \\
+Não & Não & 0,50 (50\%) & 0,50 (50\%) \\
+\hline
+\end{tabular}
+\caption{$P(P \mid C, E)$ - Probabilidade de sentir-se penalizado dado cola e estudo}
+\end{table}
+
+\textbf{Interpretação das dependências:}
+\begin{itemize}
+    \item Estudantes que colam E estudam sentem-se menos penalizados (10\%) - possível justificativa de que ``todos fazem''
+    \item Estudantes que colam e NÃO estudam sentem-se mais penalizados (80\%) - consciência da desvantagem
+    \item Estudantes que NÃO colam e estudam sentem-se muito penalizados (90\%) - percebem injustiça
+    \item Estudantes que NÃO colam e NÃO estudam têm percepção intermediária (50\%)
+\end{itemize}
+
+\subsection{Cálculos de Probabilidade}
+
+\subsubsection{Questão 1: \texorpdfstring{$P(\text{Cola}=\text{Sim})$}{P(Cola=Sim)}}
+
+\textbf{Objetivo:} Calcular a probabilidade total de um aluno colar em provas.
+
+\textbf{Solução:}
+
+Utilizamos inferência por enumeração, marginalizando sobre a variável Nível:
+
+\begin{align}
+P(C=Sim) = \sum_{n \in N} P(C=Sim \mid N=n) \times P(N=n)
+\end{align}
+
+Expandindo:
+\begin{align}
+P(C=Sim) &= P(C=Sim \mid N=Univ) \times P(N=Univ) + \nonumber \\
+         &\quad P(C=Sim \mid N=Sec) \times P(N=Sec) + \nonumber \\
+         &\quad P(C=Sim \mid N=Fund) \times P(N=Fund)
+\end{align}
+
+Substituindo os valores:
+\begin{align}
+P(C=Sim) &= 0,60 \times 0,10 + 0,50 \times 0,30 + 0,20 \times 0,60 \nonumber \\
+         &= 0,06 + 0,15 + 0,12 \nonumber \\
+         &= 0,33
+\end{align}
+
+\textbf{Resposta:} $P(\text{Cola}=\text{Sim}) = \textbf{0,33} = \textbf{33\%}$
+
+\textbf{Interpretação:} Cerca de um terço dos estudantes cola em provas. A taxa é influenciada principalmente pelos estudantes do nível secundário (que representam 30\% da população) e fundamental (que representam 60\% da população).
+
+\subsubsection{Questão 2: \texorpdfstring{$P(N=\text{Secundário} \mid V=\text{Sim}, P=\text{Sim})$}{P(N=Secundário | V=Sim, P=Sim)}}
+
+\textbf{Objetivo:} Calcular a probabilidade de u  m aluno ser do ensino secundário, dado que ele viu um colega colar e se sentiu penalizado na nota.
+
+\textbf{Solução:}
+
+Aplicamos o Teorema de Bayes com evidências múltiplas:
+
+\begin{align}
+P(N=\text{Sec} \mid V=\text{Sim}, P=\text{Sim}) = \frac{P(V=\text{Sim}, P=\text{Sim} \mid N=\text{Sec}) \times P(N=\text{Sec})}{P(V=\text{Sim}, P=\text{Sim})}
+\end{align}
+
+\textbf{Passo 1:} Calcular $P(V=\text{Sim}, P=\text{Sim} \mid N)$ para cada nível
+
+Precisamos marginalizar sobre C e E:
+\begin{align}
+P(V=\text{Sim}, P=\text{Sim} \mid N) = \sum_{C,E} P(V=\text{Sim} \mid N) \times P(P=\text{Sim} \mid C,E) \times P(C \mid N) \times P(E \mid N)
+\end{align}
+
+Para N=Secundário:
+\begin{align}
+&P(V=\text{Sim}, P=\text{Sim} \mid N=\text{Sec}) = \nonumber \\
+&\quad 0,5 \times (0,1 \times 0,5 \times 0,3 + 0,8 \times 0,5 \times 0,7 + \nonumber \\
+&\quad\quad 0,9 \times 0,5 \times 0,3 + 0,5 \times 0,5 \times 0,7) \nonumber \\
+&= 0,5 \times (0,0075 + 0,14 + 0,0675 + 0,0875) \nonumber \\
+&= 0,5 \times 0,3025 = 0,3025 \times \frac{1}{2} \nonumber \\
+&= 0,3025
+\end{align}
+
+(Note: O fator 0,5 = $P(V=\text{Sim} \mid N=\text{Sec})$ é comum a todos os termos)
+
+Cálculos similares para os outros níveis (detalhes no Apêndice):
+\begin{itemize}
+    \item $P(V=\text{Sim}, P=\text{Sim} \mid N=\text{Universitário}) = 0,3850$
+    \item $P(V=\text{Sim}, P=\text{Sim} \mid N=\text{Secundário}) = 0,3025$
+    \item $P(V=\text{Sim}, P=\text{Sim} \mid N=\text{Fundamental}) = 0,0596$
+\end{itemize}
+
+\textbf{Passo 2:} Calcular o numerador
+
+\begin{align}
+\text{Numerador} &= P(V=\text{Sim}, P=\text{Sim} \mid N=\text{Sec}) \times P(N=\text{Sec}) \nonumber \\
+&= 0,3025 \times 0,3 = 0,09075
+\end{align}
+
+\textbf{Passo 3:} Calcular o denominador
+
+\begin{align}
+P(V=\text{Sim}, P=\text{Sim}) &= \sum_n P(V=\text{Sim}, P=\text{Sim} \mid N=n) \times P(N=n) \nonumber \\
+&= 0,3850 \times 0,1 + 0,3025 \times 0,3 + 0,0596 \times 0,6 \nonumber \\
+&= 0,0385 + 0,09075 + 0,03576 \nonumber \\
+&= 0,16501
+\end{align}
+
+\textbf{Passo 4:} Calcular a probabilidade final
+
+\begin{align}
+P(N=\text{Sec} \mid V=\text{Sim}, P=\text{Sim}) = \frac{0,09075}{0,16501} = 0,5500 = 55\%
+\end{align}
+
+\textbf{Resposta:} $P(N=\text{Secundário} \mid V=\text{Sim}, P=\text{Sim}) = \textbf{0,5500} = \textbf{55\%}$
+
+\textbf{Interpretação:} Dado que um estudante viu colegas colando e se sentiu penalizado, há 55\% de probabilidade de ele ser do ensino secundário. Isso representa um aumento significativo em relação à probabilidade a priori de 30\%, indicando que esta combinação de evidências é particularmente comum neste nível de ensino.
+
+\section{Conclusão}
+\label{sec:conclusao}
+
+Neste trabalho, aplicamos Redes Bayesianas para modelar e realizar inferências probabilísticas em dois cenários distintos: detecção de fraude em cartões de crédito e análise de desonestidade acadêmica.
+
+\subsection{Principais Resultados}
+
+\textbf{PARTE 1 - Detecção de Fraude:}
+\begin{itemize}
+    \item A probabilidade de compra de gasolina (1,02\%) é muito inferior à de créditos para celular (68,65\%)
+    \item Há uma correlação positiva entre compras de gasolina e créditos para celular (69,14\% vs 68,65\%)
+    \item Mesmo com evidências suspeitas (compra de crédito sem gasolina), a probabilidade de fraude permanece baixa (0,112\%) devido à baixíssima taxa base de fraudes (0,1\%)
+    \item O modelo demonstra o efeito da probabilidade a priori: mesmo padrões suspeitos não elevam significativamente a probabilidade de fraude quando a taxa base é muito baixa
+\end{itemize}
+
+\textbf{PARTE 2 - Desonestidade Acadêmica:}
+\begin{itemize}
+    \item A taxa geral de cola é de 33\%, com grande variação entre níveis (20\% no fundamental, 60\% no universitário)
+    \item Estudantes do ensino secundário são mais propensos (55\%) a relatar ter visto colegas colando e sentir-se penalizados
+    \item A percepção de penalização está fortemente relacionada ao comportamento de estudo: estudantes que estudam mas não colam sentem-se mais injustiçados (90\%)
+\end{itemize}
+
+\subsection{Aprendizados sobre Redes Bayesianas}
+
+\begin{enumerate}
+    \item \textbf{Modelagem de Dependências:} As Redes Bayesianas permitem representar de forma clara e intuitiva as relações causais entre variáveis, facilitando o entendimento do domínio
+    
+    \item \textbf{Eficiência Computacional:} A estrutura da rede permite decompor probabilidades conjuntas complexas em produtos de probabilidades condicionais mais simples, seguindo a regra da cadeia
+    
+    \item \textbf{Independência Condicional:} O conceito de independência condicional (e.g., G e C independentes dado F) é fundamental para simplificar cálculos e reduzir o número de parâmetros necessários
+    
+    \item \textbf{Inferência Bidirecional:} Podemos tanto fazer previsões (dado causas, inferir efeitos) quanto diagnósticos (dado efeitos, inferir causas), demonstrado pela aplicação do Teorema de Bayes
+    
+    \item \textbf{Importância das Probabilidades A Priori:} Os resultados da Parte 1 mostram como probabilidades a priori extremas (como 0,1\% de fraude) dominam as conclusões, mesmo diante de evidências relevantes
+\end{enumerate}
+
+\subsection{Aplicações Práticas}
+
+As Redes Bayesianas demonstradas neste trabalho têm aplicações diretas em:
+\begin{itemize}
+    \item \textbf{Sistemas de Detecção de Fraude:} Identificação de transações suspeitas em tempo real
+    \item \textbf{Análise Educacional:} Compreensão de fatores que influenciam comportamento acadêmico
+    \item \textbf{Tomada de Decisão:} Suporte a decisões sob incerteza em diversos domínios
+    \item \textbf{Diagnóstico Médico:} Inferência de doenças a partir de sintomas observados
+    \item \textbf{Sistemas Especialistas:} Representação de conhecimento probabilístico de especialistas
+\end{itemize}
+
+Em conclusão, as Redes Bayesianas são uma ferramenta poderosa e versátil para raciocínio probabilístico, permitindo modelar incerteza de forma rigorosa e realizar inferências complexas de maneira estruturada e interpretável.
+
+
+\appendix
+\section{Cálculos Computacionais}
+\label{app:codigo}
+
+Os cálculos das questões 3 a 6 da Parte 1 e da questão 2 da Parte 2 foram realizados computacionalmente devido à sua complexidade. O código Python completo utilizado está apresentado abaixo:
+
+\lstinputlisting[language=Python, caption={Código Python para cálculos de probabilidades}]{calculations.py}
+
+\bibliographystyle{plain}
+\bibliography{ref}
+
+\end{document}
