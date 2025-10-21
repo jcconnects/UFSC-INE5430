@@ -102,9 +102,9 @@
       André Thiago Pfleger \\
       Gustavo Girotto \\
       João Pedro Schmidt Cordeiro \\
-      
+
       \vfill
-      
+
       {Florianópolis} \\
       {\today}
    \end{center}
@@ -311,7 +311,7 @@ Para calcular esta probabilidade marginal, precisamos marginalizar sobre todas a
 P(G=\text{sim}) = \sum_{F,I,S} P(G=\text{sim} \mid F) \times P(F) \times P(I) \times P(S)
 \end{align}
 
-Como F, I e S são independentes, podemos expandir a soma sobre todos os estados possíveis. O cálculo detalhado foi realizado computacionalmente (ver Apêndice) e envolve somar 12 termos (2 estados de F × 3 estados de I × 2 estados de S).
+Como F, I e S são independentes, podemos expandir a soma sobre todos os estados possíveis. O cálculo detalhado envolve somar 12 termos (2 estados de F × 3 estados de I × 2 estados de S).
 
 Principais contribuições ao cálculo:
 \begin{itemize}
@@ -320,6 +320,13 @@ Principais contribuições ao cálculo:
 \end{itemize}
 
 \textbf{Resposta:} $P(G=\text{sim}) = \textbf{0,01019} = \textbf{1,019\%}$
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{parte1_1.jpeg}
+\caption{Questões 1,2 e 3 -- Parte 1}
+\label{fig:parte1_1}
+\end{figure}
 
 \subsubsection{Questão 4: \texorpdfstring{$P(C=\text{sim})$}{P(C=sim)}}
 
@@ -333,7 +340,7 @@ Semelhante à questão anterior, utilizamos inferência por enumeração, mas ag
 P(C=\text{sim}) = \sum_{F,I,S} P(C=\text{sim} \mid F,I,S) \times P(F) \times P(I) \times P(S)
 \end{align}
 
-Neste caso, a dependência de C com relação a I e S (além de F) resulta em diferentes probabilidades condicionais para cada combinação de estados. O cálculo completo (ver Apêndice) mostra que:
+Neste caso, a dependência de C com relação a I e S (além de F) resulta em diferentes probabilidades condicionais para cada combinação de estados. O cálculo completo mostra que:
 
 \begin{itemize}
     \item Compras de crédito são muito comuns quando não há fraude (variando de 50\% a 80\% dependendo da demografia)
@@ -362,7 +369,7 @@ Para o numerador, precisamos calcular a probabilidade conjunta $P(C=\text{sim}, 
 P(C=\text{sim}, G=\text{sim}) = \sum_{F,I,S} P(C=\text{sim} \mid F,I,S) \times P(G=\text{sim} \mid F) \times P(F) \times P(I) \times P(S)
 \end{align}
 
-Cálculos detalhados (ver Apêndice):
+Cálculos detalhados:
 \begin{itemize}
     \item $P(C=\text{sim}, G=\text{sim}) = 0,0070456375$
     \item $P(G=\text{sim}) = 0,01019$
@@ -434,6 +441,13 @@ P(F=\text{sim} \mid C=\text{sim}, G=\text{não}) = \frac{0,00076}{0,6795} = 0,00
     \item O padrão observado (C=sim, G=não) também é comum em transações legítimas
 \end{itemize}
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{parte1_2.jpeg}
+\caption{Questões 4,5,6 -- Parte 1}
+\label{fig:parte1_2}
+\end{figure}
+
 \section{PARTE 2 - Rede Bayesiana sobre Desonestidade Acadêmica}
 \label{sec:parte2}
 
@@ -446,24 +460,24 @@ Nesta parte, construímos uma Rede Bayesiana para modelar o comportamento de est
 Definimos cinco variáveis aleatórias para representar o cenário:
 
 \begin{itemize}
-    \item \textbf{N (Nível de Ensino):} Nível educacional do estudante. 
-    
+    \item \textbf{N (Nível de Ensino):} Nível educacional do estudante.
+
     Domínio: $\{\text{Universitário}, \text{Secundário}, \text{Fundamental}\}$
-    
-    \item \textbf{C (Cola):} Indica se o estudante cola em provas. 
-    
+
+    \item \textbf{C (Cola):} Indica se o estudante cola em provas.
+
     Domínio: $\{\text{Sim}, \text{Não}\}$
-    
-    \item \textbf{V (Viu Colega Colando):} Indica se o estudante viu colegas colando. 
-    
+
+    \item \textbf{V (Viu Colega Colando):} Indica se o estudante viu colegas colando.
+
     Domínio: $\{\text{Sim}, \text{Não}\}$
-    
-    \item \textbf{E (Estuda):} Indica se o estudante estuda regularmente. 
-    
+
+    \item \textbf{E (Estuda):} Indica se o estudante estuda regularmente.
+
     Domínio: $\{\text{Sim}, \text{Não}\}$
-    
-    \item \textbf{P (Sente-se Penalizado):} Indica se o estudante se sente penalizado na nota quando outros colam. 
-    
+
+    \item \textbf{P (Sente-se Penalizado):} Indica se o estudante se sente penalizado na nota quando outros colam.
+
     Domínio: $\{\text{Sim}, \text{Não}\}$
 \end{itemize}
 
@@ -490,15 +504,15 @@ Estrutura gráfica:
 ]
     % Nó pai
     \node (N) at (0,0) {N\\[2pt]\tiny Nível};
-    
+
     % Nós filhos de N
     \node (C) at (-2,-2.5) {C\\[2pt]\tiny Cola};
     \node (V) at (0,-2.5) {V\\[2pt]\tiny Viu\\[-2pt]\tiny Colega};
     \node (E) at (2,-2.5) {E\\[2pt]\tiny Estuda};
-    
+
     % Nó final
     \node (P) at (0,-5) {P\\[2pt]\tiny Sente-se\\[-2pt]\tiny Penalizado};
-    
+
     % Arestas
     \draw[arrow] (N) -- (C);
     \draw[arrow] (N) -- (V);
@@ -647,21 +661,27 @@ P(V=\text{Sim}, P=\text{Sim} \mid N) = \sum_{C,E} P(V=\text{Sim} \mid N) \times 
 Para N=Secundário:
 \begin{align}
 &P(V=\text{Sim}, P=\text{Sim} \mid N=\text{Sec}) = \nonumber \\
-&\quad 0,5 \times (0,1 \times 0,5 \times 0,3 + 0,8 \times 0,5 \times 0,7 + \nonumber \\
-&\quad\quad 0,9 \times 0,5 \times 0,3 + 0,5 \times 0,5 \times 0,7) \nonumber \\
-&= 0,5 \times (0,0075 + 0,14 + 0,0675 + 0,0875) \nonumber \\
-&= 0,5 \times 0,3025 = 0,3025 \times \frac{1}{2} \nonumber \\
+&\quad 0,5 \times 0,1 \times 0,5 \times 0,3 + 0,5 \times 0,8 \times 0,5 \times 0,7 + \nonumber \\
+&\quad\quad 0,5 \times 0,9 \times 0,5 \times 0,3 + 0,5 \times 0,5 \times 0,5 \times 0,7 \nonumber \\
+&= 0,0075 + 0,14 + 0,0675 + 0,0875 \nonumber \\
 &= 0,3025
 \end{align}
 
 (Note: O fator 0,5 = $P(V=\text{Sim} \mid N=\text{Sec})$ é comum a todos os termos)
 
-Cálculos similares para os outros níveis (detalhes no Apêndice):
+Cálculos similares para os outros níveis:
 \begin{itemize}
     \item $P(V=\text{Sim}, P=\text{Sim} \mid N=\text{Universitário}) = 0,3850$
     \item $P(V=\text{Sim}, P=\text{Sim} \mid N=\text{Secundário}) = 0,3025$
     \item $P(V=\text{Sim}, P=\text{Sim} \mid N=\text{Fundamental}) = 0,0596$
 \end{itemize}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{parte2_1.jpeg}
+\caption{Questão 2 -- Passo 1 -- Parte 2}
+\label{fig:parte2_1}
+\end{figure}
 
 \textbf{Passo 2:} Calcular o numerador
 
@@ -689,6 +709,13 @@ P(N=\text{Sec} \mid V=\text{Sim}, P=\text{Sim}) = \frac{0,09075}{0,16501} = 0,55
 
 \textbf{Interpretação:} Dado que um estudante viu colegas colando e se sentiu penalizado, há 55\% de probabilidade de ele ser do ensino secundário. Isso representa um aumento significativo em relação à probabilidade a priori de 30\%, indicando que esta combinação de evidências é particularmente comum neste nível de ensino.
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{parte2_2.jpeg}
+\caption{Questão 2 -- Passo 2,3,4 -- Parte 2}
+\label{fig:parte2_2}
+\end{figure}
+
 \section{Conclusão}
 \label{sec:conclusao}
 
@@ -715,13 +742,13 @@ Neste trabalho, aplicamos Redes Bayesianas para modelar e realizar inferências 
 
 \begin{enumerate}
     \item \textbf{Modelagem de Dependências:} As Redes Bayesianas permitem representar de forma clara e intuitiva as relações causais entre variáveis, facilitando o entendimento do domínio
-    
+
     \item \textbf{Eficiência Computacional:} A estrutura da rede permite decompor probabilidades conjuntas complexas em produtos de probabilidades condicionais mais simples, seguindo a regra da cadeia
-    
+
     \item \textbf{Independência Condicional:} O conceito de independência condicional (e.g., G e C independentes dado F) é fundamental para simplificar cálculos e reduzir o número de parâmetros necessários
-    
+
     \item \textbf{Inferência Bidirecional:} Podemos tanto fazer previsões (dado causas, inferir efeitos) quanto diagnósticos (dado efeitos, inferir causas), demonstrado pela aplicação do Teorema de Bayes
-    
+
     \item \textbf{Importância das Probabilidades A Priori:} Os resultados da Parte 1 mostram como probabilidades a priori extremas (como 0,1\% de fraude) dominam as conclusões, mesmo diante de evidências relevantes
 \end{enumerate}
 
@@ -740,12 +767,7 @@ Em conclusão, as Redes Bayesianas são uma ferramenta poderosa e versátil para
 
 
 \appendix
-\section{Cálculos Computacionais}
-\label{app:codigo}
 
-Os cálculos das questões 3 a 6 da Parte 1 e da questão 2 da Parte 2 foram realizados computacionalmente devido à sua complexidade. O código Python completo utilizado está apresentado abaixo:
-
-\lstinputlisting[language=Python, caption={Código Python para cálculos de probabilidades}]{calculations.py}
 
 \bibliographystyle{plain}
 \bibliography{ref}
