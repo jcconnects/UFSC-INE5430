@@ -1,0 +1,806 @@
+\documentclass[12pt]{article}
+
+% SBC Template
+\usepackage{sbc-template}
+
+% Required packages
+\usepackage[utf8]{inputenc}
+\usepackage[brazilian]{babel}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning}
+
+% Code listing configuration
+\lstset{
+  language=Python,
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{gray}\itshape,
+  stringstyle=\color{red},
+  showstringspaces=false,
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  numbersep=5pt,
+  tabsize=2,
+  captionpos=b
+}
+
+% Title and authors
+\title{LangChain: Framework para Orquestração de \\ Modelos de Linguagem de Grande Escala}
+
+\author{
+  André Thiago Pfleger\inst{1}, Gustavo Girotto\inst{1}, João Pedro Schmidt Cordeiro\inst{1}
+}
+
+\address{
+  Departamento de Informática e Estatística -- Universidade Federal de Santa Catarina (UFSC)\\
+  Florianópolis -- SC -- Brasil
+  \email{\{andre.pfleger,gustavo.girotto,joao.cordeiro\}@grad.ufsc.br}
+}
+
+\begin{document}
+
+\maketitle
+
+% ============================================================
+% RESUMO (Portuguese Abstract)
+% ============================================================
+% INSTRUÇÕES: Escrever 150-200 palavras resumindo:
+% 1. Contexto: Explosão de LLMs e desafios de integração
+% 2. O que é LangChain: Framework de orquestração
+% 3. Principais contribuições/componentes
+% 4. Resultados/impacto na área
+% 5. Palavras-chave ao final
+
+\begin{abstract}
+% [PARÁGRAFO 1 - 3-4 linhas]: Contextualizar o crescimento dos LLMs
+% - Mencionar GPT-4, Claude, Llama 2
+% - Problema: como integrar esses modelos em aplicações reais?
+% - Desafios: gerenciamento de contexto, memória, integração com dados externos
+
+% [PARÁGRAFO 2 - 4-5 linhas]: Apresentar LangChain
+% - Framework open-source criado em 2022
+% - Objetivo: simplificar desenvolvimento de aplicações com LLMs
+% - Principais componentes: chains, agents, memory, tools
+% - Suporte a múltiplos modelos e integrações
+
+% [PARÁGRAFO 3 - 2-3 linhas]: Contribuições do artigo
+% - Análise arquitetural do framework
+% - Comparação com alternativas (LlamaIndex, Semantic Kernel)
+% - Discussão de casos de uso práticos
+% - Avaliação crítica de vantagens e limitações
+
+\textbf{Palavras-chave}: LangChain, Modelos de Linguagem, LLMs, Agentes, RAG, Inteligência Artificial
+\end{abstract}
+
+% ============================================================
+% ABSTRACT (English)
+% ============================================================
+% INSTRUÇÕES: Traduzir o resumo para inglês mantendo estrutura similar
+
+\begin{englishabstract}
+% [PARAGRAPH 1 - 3-4 lines]: Contextualize LLM growth
+% - Mention GPT-4, Claude, Llama 2
+% - Problem: how to integrate these models in real applications?
+% - Challenges: context management, memory, integration with external data
+
+% [PARAGRAPH 2 - 4-5 lines]: Present LangChain
+% - Open-source framework created in 2022
+% - Goal: simplify LLM application development
+% - Main components: chains, agents, memory, tools
+% - Support for multiple models and integrations
+
+% [PARAGRAPH 3 - 2-3 lines]: Paper contributions
+% - Architectural analysis of the framework
+% - Comparison with alternatives (LlamaIndex, Semantic Kernel)
+% - Discussion of practical use cases
+% - Critical evaluation of advantages and limitations
+
+\textbf{Keywords}: LangChain, Language Models, LLMs, Agents, RAG, Artificial Intelligence
+\end{englishabstract}
+
+% ============================================================
+% 1. INTRODUÇÃO
+% Estimativa: 1-1.5 páginas
+% ============================================================
+\section{Introdução}
+\label{sec:introducao}
+
+% [PARÁGRAFO 1 - 5-6 linhas]: Contextualizar a revolução dos LLMs
+% - 2022-2023: explosão de modelos de linguagem (GPT-3.5, GPT-4, Claude, Llama)
+% - Capacidades: geração de texto, tradução, summarização, raciocínio
+% - Impacto em múltiplos setores: atendimento ao cliente, educação, programação
+% - Transformação em como interagimos com IA
+% - Citar: \cite{brown2020language} para GPT-3, \cite{openai2023gpt4} para GPT-4
+
+% [PARÁGRAFO 2 - 6-7 linhas]: Apresentar os desafios de integração
+% - Problema 1: APIs simples não são suficientes para aplicações complexas
+% - Problema 2: Gerenciamento de contexto e memória conversacional
+% - Problema 3: Integração com fontes de dados externas (bases de conhecimento)
+% - Problema 4: Necessidade de raciocínio multi-step e uso de ferramentas
+% - Problema 5: Custos computacionais e otimização de prompts
+% - Gap entre capacidades dos modelos e aplicações práticas
+
+% [PARÁGRAFO 3 - 5-6 linhas]: Introduzir LangChain como solução
+% - Framework open-source criado por Harrison Chase em outubro de 2022
+% - Objetivo: abstrair complexidades de desenvolvimento com LLMs
+% - Componentes modulares para orquestração de modelos
+% - Comunidade ativa: +70k estrelas no GitHub, adoção em startups e empresas
+% - Python e JavaScript/TypeScript como linguagens principais
+% - Citar: \cite{langchain2023docs} documentação oficial
+
+% [PARÁGRAFO 4 - 4-5 linhas]: Motivação para o trabalho
+% - Relevância acadêmica: novo paradigma de desenvolvimento com IA
+% - Conexão com tópicos de IA: agentes, representação de conhecimento, NLP
+% - Necessidade de análise crítica de ferramentas emergentes
+% - Importância para formação de desenvolvedores em IA
+
+% [PARÁGRAFO 5 - 3-4 linhas]: Objetivos do artigo
+% - Apresentar arquitetura e componentes principais do LangChain
+% - Analisar casos de uso práticos e padrões de implementação
+% - Comparar com frameworks alternativos
+% - Discutir limitações, desafios e direções futuras
+
+% [PARÁGRAFO 6 - 2-3 linhas]: Estrutura do artigo
+% - Seção 2: Fundamentos e arquitetura
+% - Seção 3: Componentes principais
+% - Seção 4: Aplicações práticas
+% - Seção 5: Análise comparativa
+% - Seção 6: Conclusões e trabalhos futuros
+
+% ============================================================
+% 2. FUNDAMENTOS E ARQUITETURA
+% Estimativa: 2-2.5 páginas
+% ============================================================
+\section{Fundamentos e Arquitetura}
+\label{sec:fundamentos}
+
+% [PARÁGRAFO INTRODUTÓRIO - 3-4 linhas]: Overview da seção
+% - Apresentar histórico e evolução do LangChain
+% - Descrever arquitetura geral e filosofia de design
+% - Introduzir conceitos fundamentais
+
+% -----------------------------
+% 2.1 Histórico e Evolução
+% -----------------------------
+\subsection{Histórico e Evolução}
+\label{subsec:historico}
+
+% [PARÁGRAFO 1 - 5-6 linhas]: Surgimento e contexto
+% - Outubro 2022: lançamento inicial por Harrison Chase
+% - Motivação: simplificar desenvolvimento de aplicações com LLMs após GPT-3
+% - Primeiro release focado em chains e prompts básicos
+% - Crescimento explosivo: comunidade adotou rapidamente
+% - Investimentos: seed round de $10M (abril 2023), Series A de $25M (2023)
+% - Citar: artigos sobre história do LangChain
+
+% [PARÁGRAFO 2 - 4-5 linhas]: Evolução das versões
+% - v0.0.x (2022-início 2023): componentes básicos
+% - v0.1.x (2023): introdução de agents e tools
+% - v0.2.x (2023-2024): LangChain Expression Language (LCEL)
+% - Tendência: modularização crescente e melhor type safety
+
+% [PARÁGRAFO 3 - 3-4 linhas]: Ecossistema LangChain
+% - LangChain Core: biblioteca principal
+% - LangSmith: plataforma de debugging e monitoring
+% - LangServe: deployment de aplicações
+% - LangGraph: orquestração de graphs complexos
+
+% -----------------------------
+% 2.2 Arquitetura Geral
+% -----------------------------
+\subsection{Arquitetura Geral}
+\label{subsec:arquitetura}
+
+% [PARÁGRAFO 1 - 5-6 linhas]: Filosofia de design
+% - Modularidade: componentes independentes e composíveis
+% - Abstração: interface unificada para múltiplos LLMs
+% - Extensibilidade: fácil criação de componentes customizados
+% - Data-aware: integração nativa com fontes de dados
+% - Agentic: suporte a comportamento autônomo
+% - Padrão: componentes seguem interfaces padronizadas (Runnable)
+
+% [FIGURA 1]: Diagrama da arquitetura LangChain
+% Incluir diagrama mostrando camadas:
+% - Camada de Modelos (LLMs, Chat Models, Embeddings)
+% - Camada de Prompts (Templates, Selectors, Output Parsers)
+% - Camada de Dados (Vector Stores, Retrievers, Document Loaders)
+% - Camada de Memória (ConversationBufferMemory, etc.)
+% - Camada de Chains e Agents
+% - Camada de Aplicação
+
+\begin{figure}[H]
+\centering
+% [CRIAR DIAGRAMA]: Usando TikZ ou incluir imagem
+% Mostrar stack completo do LangChain com interações entre componentes
+\caption{Arquitetura em camadas do framework LangChain}
+\label{fig:arquitetura}
+\end{figure}
+
+% [PARÁGRAFO 2 - 5-6 linhas]: Camadas da arquitetura
+% - Camada de Foundation: LLMs, embeddings, APIs
+% - Camada de I/O: prompts, parsers, formatação
+% - Camada de Dados: retrieval, vector stores, loaders
+% - Camada de Orquestração: chains, agents, memory
+% - Camada de Aplicação: chatbots, QA systems, autonomous agents
+% - Fluxo: dados → processamento → LLM → parsing → output
+
+% -----------------------------
+% 2.3 Conceitos Fundamentais
+% -----------------------------
+\subsection{Conceitos Fundamentais}
+\label{subsec:conceitos}
+
+% [SUBSEÇÃO]: Chains
+% [PARÁGRAFO 1 - 4-5 linhas]: O que são chains
+% - Sequências de chamadas a componentes
+% - Composição de operações simples em fluxos complexos
+% - Input de um componente é output do anterior
+% - Tipos: LLMChain, SequentialChain, RouterChain
+% - Base para aplicações complexas
+
+% [SUBSEÇÃO]: Agents
+% [PARÁGRAFO 2 - 5-6 linhas]: Agentes inteligentes
+% - Entidades que tomam decisões sobre quais ações executar
+% - Baseados em conceito de agentes racionais da IA clássica
+% - Ciclo: Observation → Thought → Action → Observation
+% - Utilizam LLMs para raciocínio e planejamento
+% - Acesso a tools (ferramentas) para interagir com ambiente
+% - Citar: \cite{russell2010artificial} para conceito de agentes
+
+% [SUBSEÇÃO]: Tools
+% [PARÁGRAFO 3 - 3-4 linhas]: Ferramentas para agentes
+% - Interfaces que permitem agentes interagirem com mundo externo
+% - Exemplos: calculadora, buscador web, APIs, bancos de dados
+% - Cada tool tem nome, descrição e função
+% - LLM decide quando e como usar cada tool
+
+% [SUBSEÇÃO]: Memory
+% [PARÁGRAFO 4 - 4-5 linhas]: Sistemas de memória
+% - Armazenamento de contexto conversacional
+% - Tipos: Buffer (últimas N mensagens), Summary (resumo), Entity (entidades)
+% - Essencial para conversas multi-turn
+% - Trade-off: contexto vs. limite de tokens
+% - Estratégias de gerenciamento de memória
+
+% [SUBSEÇÃO]: Prompts
+% [PARÁGRAFO 5 - 3-4 linhas]: Templates e engenharia de prompts
+% - PromptTemplates: estruturas reutilizáveis para prompts
+% - Few-shot learning: exemplos no prompt
+% - Prompt selectors: escolha dinâmica baseada em modelo
+% - Output parsers: estruturação de respostas
+
+% [SUBSEÇÃO]: Retrievers
+% [PARÁGRAFO 6 - 4-5 linhas]: Recuperação de informação
+% - Interface para buscar documentos relevantes
+% - Integração com vector stores (Chroma, Pinecone, FAISS)
+% - Base para RAG (Retrieval-Augmented Generation)
+% - Embeddings para similaridade semântica
+% - Citar: \cite{lewis2020retrieval} para RAG
+
+% ============================================================
+% 3. COMPONENTES PRINCIPAIS
+% Estimativa: 2 páginas
+% ============================================================
+\section{Componentes Principais}
+\label{sec:componentes}
+
+% [PARÁGRAFO INTRODUTÓRIO - 2-3 linhas]: Overview da seção
+% - Detalhamento dos módulos principais do LangChain
+% - Exemplos práticos de uso de cada componente
+
+% -----------------------------
+% 3.1 Model I/O
+% -----------------------------
+\subsection{Model I/O}
+\label{subsec:model-io}
+
+% [PARÁGRAFO 1 - 4-5 linhas]: LLMs e Chat Models
+% - LLMs: interface para modelos de completion (GPT-3, Cohere)
+% - Chat Models: interface para modelos conversacionais (GPT-4, Claude)
+% - Abstração unificada: trocar modelo sem mudar código
+% - Suporte para streaming, callbacks, timeouts
+% - Configuração de parâmetros: temperature, max_tokens, etc.
+
+% [CÓDIGO 1]: Exemplo básico de LLM usage
+\begin{lstlisting}[caption={Exemplo de uso de LLM com LangChain},label={lst:llm-basic}]
+from langchain.llms import OpenAI
+from langchain.prompts import PromptTemplate
+from langchain.chains import LLMChain
+
+# Configurar LLM
+llm = OpenAI(temperature=0.7, model="gpt-3.5-turbo")
+
+# Criar prompt template
+template = """Voce e um assistente especializado em {area}.
+Pergunta: {pergunta}
+Resposta:"""
+prompt = PromptTemplate(
+    input_variables=["area", "pergunta"],
+    template=template
+)
+
+# Criar e executar chain
+chain = LLMChain(llm=llm, prompt=prompt)
+resposta = chain.run(
+    area="inteligencia artificial",
+    pergunta="O que sao agentes inteligentes?"
+)
+print(resposta)
+\end{lstlisting}
+
+% [PARÁGRAFO 2 - 3-4 linhas]: Output Parsers
+% - Estruturação de respostas do LLM
+% - Tipos: List, JSON, Structured, Pydantic
+% - Validação automática de outputs
+% - Retry logic para outputs mal-formados
+
+% -----------------------------
+% 3.2 Retrieval e RAG
+% -----------------------------
+\subsection{Retrieval e RAG}
+\label{subsec:retrieval}
+
+% [PARÁGRAFO 1 - 5-6 linhas]: Retrieval-Augmented Generation
+% - Problema: LLMs têm conhecimento limitado ao training data
+% - Solução: combinar LLM com busca em base de conhecimento externa
+% - Processo: 1) Criar embeddings de documentos, 2) Buscar docs relevantes,
+%   3) Incluir docs no contexto do LLM, 4) Gerar resposta fundamentada
+% - Vantagens: informação atualizada, citações, redução de alucinações
+% - Citar: \cite{lewis2020retrieval} para conceito de RAG
+
+% [PARÁGRAFO 2 - 4-5 linhas]: Vector Stores
+% - Armazenamento de embeddings para busca por similaridade
+% - Integrações: Chroma, Pinecone, FAISS, Weaviate, Milvus
+% - Operações: ingest (adicionar docs), search (buscar similares)
+% - Métricas: cosine similarity, euclidean distance
+% - Indexação para buscas eficientes
+
+% [PARÁGRAFO 3 - 3-4 linhas]: Document Loaders
+% - Carregamento de dados de múltiplas fontes
+% - Suporte: PDF, Web, SQL, APIs, Google Drive, Notion
+% - Text splitting: dividir documentos grandes em chunks
+% - Metadata preservation: manter informações contextuais
+
+% [CÓDIGO 2]: Exemplo de RAG implementation
+\begin{lstlisting}[caption={Implementação básica de RAG com LangChain},label={lst:rag}]
+from langchain.document_loaders import TextLoader
+from langchain.text_splitter import CharacterTextSplitter
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.vectorstores import Chroma
+from langchain.chains import RetrievalQA
+from langchain.llms import OpenAI
+
+# 1. Carregar documentos
+loader = TextLoader("conhecimento.txt")
+documents = loader.load()
+
+# 2. Dividir em chunks
+text_splitter = CharacterTextSplitter(
+    chunk_size=1000,
+    chunk_overlap=200
+)
+docs = text_splitter.split_documents(documents)
+
+# 3. Criar embeddings e vector store
+embeddings = OpenAIEmbeddings()
+vectorstore = Chroma.from_documents(docs, embeddings)
+
+# 4. Criar retriever
+retriever = vectorstore.as_retriever(
+    search_kwargs={"k": 3}
+)
+
+# 5. Criar QA chain
+qa_chain = RetrievalQA.from_chain_type(
+    llm=OpenAI(temperature=0),
+    chain_type="stuff",
+    retriever=retriever,
+    return_source_documents=True
+)
+
+# 6. Fazer pergunta
+resultado = qa_chain({"query": "Explique o conceito X"})
+print(resultado["result"])
+print("Fontes:", resultado["source_documents"])
+\end{lstlisting}
+
+% -----------------------------
+% 3.3 Agents e Tools
+% -----------------------------
+\subsection{Agents e Tools}
+\label{subsec:agents}
+
+% [PARÁGRAFO 1 - 5-6 linhas]: Arquitetura de agentes
+% - Agent executor: loop principal de raciocínio
+% - Tipos de agentes: Zero-shot ReAct, Conversational, OpenAI Functions
+% - ReAct pattern: Reasoning + Acting intercalados
+% - Observation → Thought → Action → Repeat
+% - LLM decide: qual tool usar? com quais parâmetros? quando parar?
+% - Citar: \cite{yao2023react} para ReAct pattern
+
+% [PARÁGRAFO 2 - 4-5 linhas]: Tools disponíveis
+% - Built-in: Wikipedia, DuckDuckGo, Calculator, Python REPL
+% - APIs: Weather, Stock prices, News
+% - Custom tools: criar ferramentas específicas
+% - Tool description: LLM usa descrição para decidir quando usar
+% - Combinação de múltiplos tools para tarefas complexas
+
+% [PARÁGRAFO 3 - 3-4 linhas]: Limitações de agentes
+% - Dependência de raciocínio do LLM (pode errar)
+% - Custos: múltiplas chamadas ao LLM
+% - Loops infinitos: agente não converge
+% - Necessidade de rate limiting e error handling
+
+% -----------------------------
+% 3.4 Memory Systems
+% -----------------------------
+\subsection{Memory Systems}
+\label{subsec:memory}
+
+% [PARÁGRAFO 1 - 4-5 linhas]: Tipos de memória
+% - ConversationBufferMemory: armazena todas mensagens
+% - ConversationBufferWindowMemory: últimas K mensagens
+% - ConversationSummaryMemory: resumo progressivo da conversa
+% - ConversationEntityMemory: extrai e rastreia entidades
+% - VectorStoreRetrieverMemory: busca por similaridade em histórico
+
+% [PARÁGRAFO 2 - 3-4 linhas]: Gestão de contexto
+% - Token limits: GPT-4 (8K/32K), Claude (100K+)
+% - Estratégias: window, summarization, selective retention
+% - Trade-off: contexto completo vs. custo e latência
+% - Importância para experiência conversacional
+
+% -----------------------------
+% 3.5 LCEL (LangChain Expression Language)
+% -----------------------------
+\subsection{LangChain Expression Language}
+\label{subsec:lcel}
+
+% [PARÁGRAFO 1 - 4-5 linhas]: O que é LCEL
+% - Sintaxe declarativa para compor chains
+% - Operador pipe (|): conecta componentes
+% - Inspirado em Unix pipes e functional programming
+% - Vantagens: código mais legível, composição clara
+% - Suporte nativo a streaming, async, parallelization
+
+% [CÓDIGO 3]: Exemplo com LCEL
+\begin{lstlisting}[caption={Exemplo de chain usando LCEL},label={lst:lcel}]
+from langchain.prompts import ChatPromptTemplate
+from langchain.chat_models import ChatOpenAI
+from langchain.schema.output_parser import StrOutputParser
+
+# Definir componentes
+prompt = ChatPromptTemplate.from_template(
+    "Traduza para {idioma}: {texto}"
+)
+model = ChatOpenAI()
+parser = StrOutputParser()
+
+# Compor chain usando LCEL
+chain = prompt | model | parser
+
+# Executar
+resultado = chain.invoke({
+    "idioma": "frances",
+    "texto": "Hello, how are you?"
+})
+print(resultado)  # "Bonjour, comment allez-vous?"
+\end{lstlisting}
+
+% [PARÁGRAFO 2 - 3-4 linhas]: Recursos avançados
+% - RunnableParallel: executar múltiplos runnables em paralelo
+% - RunnableBranch: conditional routing
+% - RunnablePassthrough: passar dados sem modificação
+% - Fallbacks: retry com modelos alternativos
+
+% ============================================================
+% 4. APLICAÇÕES PRÁTICAS
+% Estimativa: 1.5 páginas
+% ============================================================
+\section{Aplicações Práticas}
+\label{sec:aplicacoes}
+
+% [PARÁGRAFO INTRODUTÓRIO - 2-3 linhas]: Overview
+% - LangChain usado em diversos domínios
+% - Casos de uso reais demonstram versatilidade
+
+% -----------------------------
+% 4.1 Chatbots Conversacionais
+% -----------------------------
+\subsection{Chatbots Conversacionais}
+\label{subsec:chatbots}
+
+% [PARÁGRAFO 1 - 4-5 linhas]: Características
+% - Atendimento ao cliente automatizado
+% - Memória conversacional para contexto
+% - Integração com bases de conhecimento empresariais
+% - Personalidade e tom configuráveis
+% - Exemplos: suporte técnico, vendas, FAQ
+
+% [PARÁGRAFO 2 - 3-4 linhas]: Implementação típica
+% - Chat model + ConversationBufferMemory
+% - System prompt para definir comportamento
+% - Integration com database para informações específicas
+% - Logging e analytics para melhoria contínua
+
+% -----------------------------
+% 4.2 Sistemas de Question-Answering
+% -----------------------------
+\subsection{Sistemas de Question-Answering}
+\label{subsec:qa}
+
+% [PARÁGRAFO 1 - 5-6 linhas]: RAG para QA
+% - Responder perguntas sobre documentos corporativos
+% - Casos de uso: documentação técnica, manuais, relatórios
+% - Vantagens: respostas fundamentadas em fontes verificáveis
+% - Redução de alucinações através de grounding
+% - Citação de fontes para verificação
+% - Exemplos: assistente para documentação, legal research
+
+% [PARÁGRAFO 2 - 3-4 linhas]: Arquitetura típica
+% - Document ingestion pipeline
+% - Vector store para busca semântica
+% - RetrievalQA chain ou custom chain
+% - Post-processing para formatação de respostas
+
+% -----------------------------
+% 4.3 Agentes Autônomos
+% -----------------------------
+\subsection{Agentes Autônomos}
+\label{subsec:autonomous}
+
+% [PARÁGRAFO 1 - 4-5 linhas]: Agentes para tarefas complexas
+% - Resolução de problemas multi-step
+% - Uso de múltiplos tools
+% - Exemplos: research assistant, data analysis, task automation
+% - Capacidade de planejamento e adaptação
+% - AutoGPT e BabyAGI como inspirações
+
+% [PARÁGRAFO 2 - 3-4 linhas]: Desafios
+% - Confiabilidade: agentes podem falhar ou divergir
+% - Custos: múltiplas chamadas ao LLM
+% - Segurança: acesso a tools precisa ser controlado
+% - Necessidade de human-in-the-loop para decisões críticas
+
+% -----------------------------
+% 4.4 Aplicações em Domínios Específicos
+% -----------------------------
+\subsection{Aplicações em Domínios Específicos}
+\label{subsec:dominios}
+
+% [PARÁGRAFO 1 - 4-5 linhas]: Educação
+% - Tutores personalizados
+% - Geração de exercícios e avaliações
+% - Feedback automatizado
+% - Adaptação ao nível do estudante
+
+% [PARÁGRAFO 2 - 4-5 linhas]: Desenvolvimento de software
+% - Code generation assistants
+% - Documentation generation
+% - Code review automation
+% - Bug diagnosis e debugging assistance
+
+% [PARÁGRAFO 3 - 3-4 linhas]: Análise de dados
+% - Natural language to SQL
+% - Automated report generation
+% - Data exploration conversacional
+% - Visualization suggestions
+
+% [PARÁGRAFO 4 - 3-4 linhas]: Outros domínios
+% - Healthcare: triagem, information retrieval
+% - Legal: contract analysis, case law research
+% - Finance: investment research, risk analysis
+% - Marketing: content generation, sentiment analysis
+
+% ============================================================
+% 5. ANÁLISE COMPARATIVA
+% Estimativa: 1.5 páginas
+% ============================================================
+\section{Análise Comparativa}
+\label{sec:comparacao}
+
+% [PARÁGRAFO INTRODUTÓRIO - 2-3 linhas]: Overview
+% - LangChain não é a única solução para orquestração de LLMs
+% - Comparação com principais alternativas
+
+% -----------------------------
+% 5.1 Frameworks Alternativos
+% -----------------------------
+\subsection{Frameworks Alternativos}
+\label{subsec:alternativas}
+
+% [PARÁGRAFO 1 - 4-5 linhas]: LlamaIndex
+% - Foco específico em data indexing e retrieval
+% - Mais especializado em RAG applications
+% - Interfaces mais simples para casos de uso específicos
+% - Menos abstração, mais direto
+% - Boa escolha quando retrieval é o foco principal
+
+% [PARÁGRAFO 2 - 4-5 linhas]: Semantic Kernel (Microsoft)
+% - Framework da Microsoft para AI orchestration
+% - Integração nativa com Azure OpenAI
+% - Conceitos: Skills, Planners, Memory
+% - Suporte C#, Python, Java
+% - Foco enterprise com Microsoft stack
+
+% [PARÁGRAFO 3 - 3-4 linhas]: Haystack (Deepset)
+% - Foco em NLP pipelines e search
+% - Forte em question answering e document search
+% - Menos focado em conversational AI
+% - Boa para production search systems
+
+% [PARÁGRAFO 4 - 3-4 linhas]: Outras alternativas
+% - Guidance (Microsoft): structured output
+% - txtai: semantic search e workflows
+% - Dust: AI assistants platform
+% - Custom solutions: direct API usage
+
+% -----------------------------
+% 5.2 Comparação Estruturada
+% -----------------------------
+\subsection{Comparação Estruturada}
+\label{subsec:comparacao-estruturada}
+
+% [TABELA 1]: Comparação de frameworks
+\begin{table}[H]
+\centering
+\caption{Comparação entre frameworks de orquestração de LLMs}
+\label{tab:comparacao}
+\begin{tabular}{p{2.5cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}}
+\toprule
+\textbf{Característica} & \textbf{LangChain} & \textbf{LlamaIndex} & \textbf{Semantic Kernel} & \textbf{Haystack} \\
+\midrule
+% Preencher com comparações:
+% - Foco principal
+% - Curva de aprendizado
+% - Flexibilidade
+% - Comunidade
+% - Documentação
+% - Integrações
+% - Agent support
+% - RAG support
+% - Production ready
+% - Enterprise features
+\bottomrule
+\end{tabular}
+\end{table}
+
+% [PARÁGRAFO EXPLICATIVO - 5-6 linhas]: Análise da tabela
+% - LangChain: mais completo, maior flexibilidade
+% - LlamaIndex: melhor para RAG puro
+% - Semantic Kernel: melhor para Microsoft ecosystem
+% - Haystack: melhor para search-focused applications
+% - Escolha depende do caso de uso específico
+
+% -----------------------------
+% 5.3 Vantagens do LangChain
+% -----------------------------
+\subsection{Vantagens do LangChain}
+\label{subsec:vantagens}
+
+% [PARÁGRAFO 1 - 5-6 linhas]: Pontos fortes
+% - Comunidade: maior e mais ativa
+% - Extensibilidade: fácil criar componentes custom
+% - Integrações: >100 integrações com serviços
+% - Flexibilidade: não opinionated, múltiplas formas de fazer
+% - Ecossistema: LangSmith, LangServe complementam
+% - Documentação: extensa (porém às vezes desatualizada)
+
+% [PARÁGRAFO 2 - 3-4 linhas]: Casos de uso ideais
+% - Aplicações complexas com múltiplos componentes
+% - Quando flexibilidade é mais importante que simplicidade
+% - Projetos que podem evoluir para usar agents
+% - Times que querem controle fino sobre comportamento
+
+% -----------------------------
+% 5.4 Limitações e Desafios
+% -----------------------------
+\subsection{Limitações e Desafios}
+\label{subsec:limitacoes}
+
+% [PARÁGRAFO 1 - 5-6 linhas]: Pontos fracos
+% - Curva de aprendizado: muita abstração pode confundir
+% - Mudanças frequentes: breaking changes entre versões
+% - Documentação: nem sempre atualizada com código
+% - Performance overhead: abstrações adicionam latência
+% - Debugging: stack traces complexos, difícil troubleshooting
+% - Magic: muito "automagic" pode esconder problemas
+
+% [PARÁGRAFO 2 - 4-5 linhas]: Quando não usar
+% - Aplicações simples: chamar API diretamente pode ser melhor
+% - Quando performance é crítica: overhead pode ser significativo
+% - Projetos com requisitos muito específicos
+% - Times pequenos sem tempo para aprender framework
+
+% [PARÁGRAFO 3 - 3-4 linhas]: Recomendações
+% - Avaliar necessidade real antes de adotar
+% - Começar simples, adicionar complexidade gradualmente
+% - Manter-se atualizado com mudanças no framework
+% - Ter plano de migração caso necessário
+
+% ============================================================
+% 6. CONCLUSÃO E TRABALHOS FUTUROS
+% Estimativa: 0.5-1 página
+% ============================================================
+\section{Conclusão e Trabalhos Futuros}
+\label{sec:conclusao}
+
+% [PARÁGRAFO 1 - 5-6 linhas]: Resumo do trabalho
+% - Apresentamos LangChain como framework para orquestração de LLMs
+% - Analisamos arquitetura, componentes principais e padrões de uso
+% - Exploramos aplicações práticas em diversos domínios
+% - Comparamos com frameworks alternativos
+% - Discutimos vantagens, limitações e trade-offs
+% - Framework representa nova direção em desenvolvimento com IA
+
+% [PARÁGRAFO 2 - 4-5 linhas]: Contribuições principais
+% - Visão abrangente da arquitetura do LangChain
+% - Análise crítica de componentes e padrões
+% - Comparação estruturada com alternativas
+% - Orientações para escolha e uso apropriado
+% - Material didático para comunidade brasileira
+
+% [PARÁGRAFO 3 - 5-6 linhas]: Impacto na área
+% - LangChain democratizou desenvolvimento com LLMs
+% - Redução de barrier to entry para aplicações de IA
+% - Novo paradigma: composition over configuration
+% - Influenciou design de frameworks concorrentes
+% - Acelerou adoção de LLMs em produção
+% - Desafios permanecem em confiabilidade e custos
+
+% [PARÁGRAFO 4 - 4-5 linhas]: Tendências futuras
+% - LangGraph: orquestração com grafos para fluxos complexos
+% - LCEL v2: melhorias em type safety e performance
+% - Multi-modal: suporte a imagens, áudio, vídeo
+% - Agents mais confiáveis com better planning
+% - Fine-tuning integration: custom models seamlessly
+
+% [PARÁGRAFO 5 - 4-5 linhas]: Direções de pesquisa
+% - Benchmark sistemático de performance vs. alternativas
+% - Estudos de caso em domínios específicos
+% - Métricas para avaliação de qualidade de agents
+% - Técnicas de otimização para redução de custos
+% - Security e safety em sistemas autônomos
+
+% [PARÁGRAFO 6 - 3-4 linhas]: Considerações finais
+% - LangChain é ferramenta poderosa mas não panaceia
+% - Escolha de framework deve ser baseada em requisitos
+% - Área em rápida evolução, manter-se atualizado é essencial
+% - Futuro promissor para aplicações cada vez mais sofisticadas
+
+% ============================================================
+% AGRADECIMENTOS (Opcional)
+% ============================================================
+\section*{Agradecimentos}
+
+% [PARÁGRAFO - 2-3 linhas]: Opcional
+% - Agradecer ao professor da disciplina
+% - Agradecer à UFSC
+% - Agradecer a colegas que contribuíram
+
+% ============================================================
+% BIBLIOGRAFIA
+% ============================================================
+\bibliographystyle{plain}
+\bibliography{ref}
+
+% Referências essenciais a incluir no ref.bib:
+% - Documentação oficial LangChain
+% - Papers sobre RAG (Lewis et al., 2020)
+% - Papers sobre ReAct (Yao et al., 2023)
+% - Papers sobre transformers e LLMs (Vaswani, Brown, OpenAI)
+% - Documentação de frameworks alternativos
+% - Blog posts técnicos relevantes
+% - Livro "AI: A Modern Approach" (Russell & Norvig)
+
+\end{document}

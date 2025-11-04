@@ -15,6 +15,7 @@ Thumbs.db
 *~
 
 # LaTeX build files
+build/
 *.aux
 *.bbl
 *.blg

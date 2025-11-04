@@ -1,0 +1,87 @@
+% SBC Template Style File
+% Brazilian Computer Society (SBC) - Conference Paper Format
+% Adapted for academic papers
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{sbc-template}[2024/11/04 SBC Template Style]
+
+% Page layout - SBC standard margins
+\RequirePackage[a4paper,top=3cm,bottom=2.54cm,left=3cm,right=3cm]{geometry}
+
+% Two-column layout
+\RequirePackage{multicol}
+
+% Font and encoding
+\RequirePackage{times}
+
+% Section formatting
+\RequirePackage{titlesec}
+
+% Section title formatting - bold, left-aligned
+\titleformat{\section}
+  {\normalfont\fontsize{12}{15}\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}
+  {\normalfont\fontsize{11}{13}\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}
+  {\normalfont\fontsize{10}{12}\bfseries}{\thesubsubsection.}{0.5em}{}
+
+% Custom commands for SBC style
+\newcommand{\address}[1]{\gdef\@address{#1}}
+\newcommand{\@address}{}
+\newcommand{\email}[1]{\gdef\@email{#1}}
+\newcommand{\@email}{}
+\newcommand{\inst}[1]{$^{#1}$}
+
+% Title formatting
+\renewcommand{\maketitle}{%
+  \twocolumn[
+    \begin{center}
+      {\fontsize{14}{17}\selectfont\bfseries\@title\par}
+      \vspace{1em}
+      {\fontsize{12}{14}\selectfont\@author\par}
+      \vspace{0.5em}
+      {\fontsize{10}{12}\selectfont\@address\par}
+      \vspace{0.5em}
+      {\fontsize{10}{12}\selectfont\@email\par}
+      \vspace{1em}
+    \end{center}
+  ]
+}
+
+% Abstract environment for Resumo (Portuguese)
+\renewenvironment{abstract}{%
+  \small
+  \begin{center}
+    \bfseries Resumo
+  \end{center}
+  \quotation
+}{%
+  \endquotation
+}
+
+% Abstract environment for Abstract (English)
+\newenvironment{englishabstract}{%
+  \small
+  \begin{center}
+    \bfseries Abstract
+  \end{center}
+  \quotation
+}{%
+  \endquotation
+}
+
+% Bibliography style
+% Note: Using 'plain' style as fallback. Replace with 'sbc' if available.
+% \bibliographystyle{sbc}
+
+% Caption formatting
+\RequirePackage[font=small,labelfont=bf]{caption}
+
+% Paragraph spacing
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+
+% Line spacing
+\renewcommand{\baselinestretch}{1.0}
+
+\endinput
