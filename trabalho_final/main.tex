@@ -78,6 +78,16 @@
 % - Comparação com alternativas (LlamaIndex, Semantic Kernel)
 % - Discussão de casos de uso práticos
 % - Avaliação crítica de vantagens e limitações
+\begin{abstract}
+O avanço acelerado dos modelos de linguagem de larga escala (LLMs), como GPT-4, Claude 3 e LLaMA 2, transformou significativamente o campo da inteligência artificial ao permitir interações em linguagem natural de alta qualidade. No entanto, a integração desses modelos em aplicações reais apresenta desafios substanciais, incluindo o gerenciamento eficiente de contexto, a persistência de memória entre interações e a conexão com fontes de dados externas de forma segura e escalável \cite{openai-gpt4, meta-llama2, anthropic-claude3}.
+
+Nesse contexto, o \textit{LangChain} surge como um framework open-source criado em 2022 com o objetivo de simplificar o desenvolvimento de aplicações baseadas em LLMs. Ele fornece uma arquitetura modular composta por componentes como \textit{chains}, \textit{agents}, \textit{memory} e \textit{tools}, que permitem a orquestração de modelos de linguagem com diferentes fontes de dados e APIs externas. Além disso, oferece suporte a múltiplos provedores de modelos, facilitando a criação de pipelines inteligentes e adaptáveis \cite{langchain-docs, langchain-intro}.
+
+Este relatório analisa a arquitetura do LangChain, comparando-o com frameworks alternativos, como o LlamaIndex e o Semantic Kernel, e discutindo casos de uso práticos que demonstram seu potencial e limitações. A análise busca evidenciar as contribuições do LangChain para a democratização e operacionalização de sistemas baseados em LLMs. 
+
+\textbf{Palavras-chave:} Modelos de Linguagem; LangChain; Inteligência Artificial; Frameworks; Orquestração de LLMs.
+\end{abstract}
+
 
 \textbf{Palavras-chave}: LangChain, Modelos de Linguagem, LLMs, Agentes, RAG, Inteligência Artificial
 \end{abstract}
@@ -156,6 +166,22 @@
 % - Seção 4: Aplicações práticas
 % - Seção 5: Análise comparativa
 % - Seção 6: Conclusões e trabalhos futuros
+
+\section{Introdução}
+\label{sec:introducao}
+
+Nas últimas décadas, e em especial no biênio 2022–2023, assistimos a uma verdadeira revolução no campo dos modelos de linguagem de larga escala (LLMs). Modelos como GPT-3 e suas variantes, a família GPT-4, bem como alternativas abertas e comerciais como LLaMA (Llama 2) e Claude, demonstraram capacidades notáveis em geração de texto coerente, tradução, sumarização e raciocínio contextual. Essas capacidades vêm transformando múltiplos setores — atendimento ao cliente, educação, suporte à programação e automação de tarefas — e mudando a forma como usuários e sistemas interagem com a inteligência artificial \cite{brown2020language, openai2023gpt4, touvron2023llama2, anthropic2024claude3}.
+
+Entretanto, a disponibilidade de modelos poderosos expõe lacunas práticas para sua integração em aplicações reais. Interfaces de API simples nem sempre atendem às necessidades de aplicações complexas: há desafios no gerenciamento do contexto e da memória conversacional, na integração segura e eficiente com bases de conhecimento externas, na execução de raciocínios multi-etapa (multi-step reasoning) e na orquestração do uso de ferramentas externas. Além disso, aspectos econômicos e de custo computacional — por exemplo, otimização de prompts e seleção de janelas de contexto — tornam necessário um nível adicional de engenharia além do uso direto do modelo, criando um gap entre as capacidades dos modelos e a produção de aplicações robustas.
+
+Para suprir esse gap, surgiram frameworks de orquestração que abstraem complexidades e padronizam padrões de integração. O LangChain, criado em outubro de 2022 por Harrison Chase, é um framework open-source cujo propósito é facilitar a construção de aplicações baseadas em LLMs. Ele oferece componentes modulares — \textit{chains}, \textit{agents}, \textit{memory} e \textit{tools} — e integrações com múltiplos provedores de modelos, permitindo a composição de pipelines complexos e a instrumentação de agentes que interagem com fontes externas. O projeto possui documentação extensa e forte presença na comunidade de desenvolvedores, sendo mantido em repositório público com ampla adoção. \cite{langchain2023docs, langchain_github}
+
+A motivação deste trabalho reside na relevância acadêmica e prática de compreender e sistematizar padrões de engenharia para aplicações com LLMs. Ao analisar ferramentas emergentes como o LangChain, este relatório conecta temas centrais da IA contemporânea — agentes autônomos, representação de conhecimento e processamento de linguagem natural — com práticas de engenharia de software que são essenciais para a formação de desenvolvedores e pesquisadores.
+
+Os objetivos deste artigo são: (i) apresentar a arquitetura e os componentes principais do LangChain; (ii) analisar casos de uso práticos e padrões de implementação; (iii) comparar o framework com alternativas relevantes; e (iv) discutir limitações, desafios e direções futuras para pesquisa e engenharia nessa área.
+
+A estrutura do artigo segue a sequência: Seção~\ref{sec:fundamentos} (fundamentos e arquitetura), Seção~\ref{sec:componentes} (componentes principais), Seção~\ref{sec:aplicacoes} (aplicações práticas), Seção~\ref{sec:comparativo} (análise comparativa) e Seção~\ref{sec:conclusao} (conclusões e trabalhos futuros).
+
 
 % ============================================================
 % 2. FUNDAMENTOS E ARQUITETURA
