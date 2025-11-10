@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find:*)",
+      "WebFetch(domain:python.langchain.com)",
+      "WebFetch(domain:docs.langchain.com)",
+      "WebFetch(domain:www.pinecone.io)",
+      "WebSearch"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

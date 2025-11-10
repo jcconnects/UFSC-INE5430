@@ -158,7 +158,7 @@ Este relatório analisa a arquitetura do LangChain, comparando-o com frameworks 
 % - Discutir limitações, desafios e direções futuras
 
 % [PARÁGRAFO 6 - 2-3 linhas]: Estrutura do artigo
-% - Seção 2: Fundamentos e arquitetura
+% - Seção 2: Arquitetura do LangChain
 % - Seção 3: Componentes principais
 % - Seção 4: Aplicações práticas
 % - Seção 5: Análise comparativa
@@ -174,22 +174,22 @@ A motivação deste trabalho reside na relevância acadêmica e prática de comp
 
 Os objetivos deste artigo são: (i) apresentar a arquitetura e os componentes principais do LangChain; (ii) analisar casos de uso práticos e padrões de implementação; (iii) comparar o framework com alternativas relevantes; e (iv) discutir limitações, desafios e direções futuras para pesquisa e engenharia nessa área.
 
-A estrutura do artigo segue a sequência: Seção~\ref{sec:fundamentos} (fundamentos e arquitetura), Seção~\ref{sec:componentes} (componentes principais), Seção~\ref{sec:aplicacoes} (aplicações práticas), Seção~\ref{sec:comparativo} (análise comparativa) e Seção~\ref{sec:conclusao} (conclusões e trabalhos futuros).
+A estrutura do artigo segue a sequência: Seção~\ref{sec:arquitetura} (arquitetura do LangChain), Seção~\ref{sec:componentes} (componentes principais), Seção~\ref{sec:aplicacoes} (aplicações práticas), Seção~\ref{sec:comparacao} (análise comparativa) e Seção~\ref{sec:conclusao} (conclusões e trabalhos futuros).
 
 
 % ============================================================
-% 2. FUNDAMENTOS E ARQUITETURA
+% 2. ARQUITETURA DO LANGCHAIN
 % Estimativa: 2-2.5 páginas
 % ============================================================
-\section{Fundamentos e Arquitetura}
-\label{sec:fundamentos}
+\section{Arquitetura do LangChain}
+\label{sec:arquitetura}
 
 % [PARÁGRAFO INTRODUTÓRIO - 3-4 linhas]: Overview da seção
 % - Apresentar histórico e evolução do LangChain
-% - Descrever arquitetura geral e filosofia de design
-% - Introduzir conceitos fundamentais
+% - Descrever princípios arquiteturais e organização modular
+% - Introduzir LCEL como paradigma fundamental de composição
 
-Para compreender o papel do LangChain no ecossistema de desenvolvimento com LLMs, é necessário examinar tanto sua trajetória desde o lançamento inicial em 2022 quanto os princípios arquiteturais que fundamentam seu design. Esta seção apresenta o histórico e a evolução do framework, detalhando como ele emergiu de uma necessidade concreta da comunidade de desenvolvedores e evoluiu para um ecossistema completo de ferramentas. Em seguida, descreve-se a arquitetura modular do LangChain, destacando seus princípios de design — modularidade, abstração e extensibilidade — e como esses princípios se materializam na organização em camadas que permite a composição flexível de pipelines de processamento com modelos de linguagem.
+Para compreender o papel do LangChain no ecossistema de desenvolvimento com LLMs, é necessário examinar tanto sua trajetória desde o lançamento inicial em 2022 quanto os princípios arquiteturais que fundamentam seu design. Esta seção apresenta o histórico e a evolução do framework, detalhando como ele emergiu de uma necessidade concreta da comunidade de desenvolvedores e evoluiu para um ecossistema completo de ferramentas. Em seguida, descreve-se a arquitetura modular do LangChain, destacando seus princípios de design — modularidade, abstração e extensibilidade — e como esses princípios se materializam na organização baseada em pacotes e na LangChain Expression Language (LCEL), que permite a composição declarativa de componentes.
 
 % -----------------------------
 % 2.1 Histórico e Evolução
@@ -221,7 +221,7 @@ Do ponto de vista de versões, a linha v0.0.x (2022–início de 2023) forneceu 
 % - LangServe: deployment de aplicações
 % - LangGraph: orquestração de graphs complexos
 
-Em paralelo, formou-se um ecossistema complementar. O \textit{LangChain Core} permaneceu como a biblioteca principal; o \textit{LangSmith} surgiu como plataforma de depuração, avaliação e monitoramento de aplicações com LLMs; o \textit{LangServe} facilitou a publicação de \textit{chains} e agentes como serviços web; e o \textit{LangGraph} introduziu orquestração baseada em grafos para fluxos complexos e controlados por estado. Esses componentes reforçam a proposta \textit{end-to-end}, cobrindo do desenvolvimento local à observabilidade em produção \cite{langchain2023docs, langsmith2023}.
+Em paralelo, formou-se um ecossistema complementar ao redor do \textit{LangChain Core}: o \textit{LangSmith} para depuração e monitoramento; o \textit{LangServe} para publicação de aplicações como APIs REST; e o \textit{LangGraph} para orquestração baseada em grafos com controle de estado. Juntos, esses componentes viabilizam um ciclo \textit{end-to-end} — do desenvolvimento local à observabilidade em produção \cite{langchain2023docs, langsmith2023}.
 
 % -----------------------------
 % 2.2 Arquitetura Geral
@@ -237,94 +237,129 @@ Em paralelo, formou-se um ecossistema complementar. O \textit{LangChain Core} pe
 % - Agentic: suporte a comportamento autônomo
 % - Padrão: componentes seguem interfaces padronizadas (Runnable)
 
+A arquitetura do LangChain fundamenta-se em princípios de design que priorizam modularidade, abstração e extensibilidade \cite{langchain2023docs}. A modularidade permite que componentes sejam combinados livremente, isolando responsabilidades — o \textit{langchain-core} define abstrações base (\textit{Runnable}, \textit{RunnableSequence}), enquanto o pacote \textit{langchain} implementa a lógica de cadeias e agentes. A abstração unifica o acesso a diferentes provedores por meio de interfaces padronizadas: modelos de chat, embeddings e \textit{retrievers} compartilham métodos comuns independentemente do \textit{backend}. A extensibilidade garante que novos componentes (ferramentas, modelos customizados, estratégias de recuperação) integrem-se sem modificar a estrutura central. Juntas, essas escolhas de projeto favorecem a composição de soluções complexas a partir de blocos reutilizáveis, a troca de provedores sem reestruturação de código, e a manutenção de contratos bem definidos entre camadas.
+
 % [FIGURA 1]: Diagrama da arquitetura LangChain
-% Incluir diagrama mostrando camadas:
-% - Camada de Modelos (LLMs, Chat Models, Embeddings)
-% - Camada de Prompts (Templates, Selectors, Output Parsers)
-% - Camada de Dados (Vector Stores, Retrievers, Document Loaders)
-% - Camada de Memória (ConversationBufferMemory, etc.)
-% - Camada de Chains e Agents
-% - Camada de Aplicação
+% Incluir diagrama mostrando organização de pacotes e componentes principais
 
 \begin{figure}[H]
 \centering
-% [CRIAR DIAGRAMA]: Usando TikZ ou incluir imagem
-% Mostrar stack completo do LangChain com interações entre componentes
-\caption{Arquitetura em camadas do framework LangChain}
+\begin{tikzpicture}[
+  package/.style={rectangle, draw, fill=blue!20, text width=4.5cm, text centered, minimum height=1.2cm, font=\small\bfseries},
+  component/.style={rectangle, draw, fill=gray!10, text width=4.5cm, text centered, minimum height=0.8cm, font=\scriptsize},
+  ecosystem/.style={rectangle, draw=purple!60, line width=1.5pt, fill=purple!5, text width=4.5cm, text centered, minimum height=1.2cm, font=\small\bfseries},
+  node distance=0.3cm and 0.5cm
+]
+
+% Núcleo do framework
+\node[package, fill=green!30] (core) {langchain-core};
+\node[component, below=of core] {Abstrações Base \\ Interfaces \textit{Runnable}};
+
+\node[package, fill=blue!30, right=of core] (main) {langchain};
+\node[component, below=of main] {Chains, Agents \\ Estratégias RAG};
+
+\node[package, fill=orange!30, right=of main] (integrations) {Integrações};
+\node[component, below=of integrations] {langchain-openai \\ langchain-anthropic};
+
+% Segunda linha - Community e Ecossistema
+\node[package, fill=yellow!30, below=1.5cm of core] (community) {langchain-community};
+\node[component, below=of community] {Integrações \\ da Comunidade};
+
+\node[ecosystem, fill=purple!20, below=1.5cm of main] (graph) {LangGraph};
+\node[component, below=of graph] {Aplicações \\ com Estado};
+
+\node[ecosystem, fill=purple!20, below=1.5cm of integrations] (serve) {LangServe};
+\node[component, below=of serve] {Deploy \\ REST APIs};
+
+% LangSmith separado (plataforma)
+\node[ecosystem, fill=red!20, below=2.8cm of main] (smith) {LangSmith};
+\node[component, below=of smith] {Debug, Test, Monitor};
+
+% Setas de dependência
+\draw[->, thick] (core.north) -- ++(0,0.3) -| (main.north);
+\draw[->, thick] (core.north) -- ++(0,0.3) -| (integrations.north);
+\draw[->, thick] (core.south) -- (community.north);
+\draw[->, thick] (main.south) -- (graph.north);
+\draw[->, thick] (main.south) -- (serve.north);
+
+\end{tikzpicture}
+\caption{Arquitetura modular do framework LangChain baseada em pacotes}
 \label{fig:arquitetura}
 \end{figure}
 
-% [PARÁGRAFO 2 - 5-6 linhas]: Camadas da arquitetura
-% - Camada de Foundation: LLMs, embeddings, APIs
-% - Camada de I/O: prompts, parsers, formatação
-% - Camada de Dados: retrieval, vector stores, loaders
-% - Camada de Orquestração: chains, agents, memory
-% - Camada de Aplicação: chatbots, QA systems, autonomous agents
+% [PARÁGRAFO 2 - 5-6 linhas]: Organização modular baseada em pacotes
+% - Núcleo: langchain-core
+% - Pacote principal: langchain
+% - Pacotes de integração: langchain-openai, langchain-anthropic
+% - Comunidade: langchain-community
+% - Ecossistema complementar: LangGraph, LangServe, LangSmith
 % - Fluxo: dados → processamento → LLM → parsing → output
 
+A Figura~\ref{fig:arquitetura} ilustra a organização modular baseada em pacotes que estrutura o framework. No núcleo, o \textit{langchain-core} fornece as abstrações fundamentais e a interface \textit{Runnable}, que padroniza a composição de componentes através da LangChain Expression Language (LCEL). O pacote \textit{langchain} implementa a lógica de orquestração de alto nível — chains para sequências de processamento, agents para tomada de decisão autônoma, e estratégias de Retrieval-Augmented Generation (RAG). Os pacotes de integração específicos (\textit{langchain-openai}, \textit{langchain-anthropic}, entre outros) encapsulam as particularidades de cada provedor de LLM, permitindo portabilidade e versionamento independente. O \textit{langchain-community} agrega um ecossistema diverso de integrações mantidas pela comunidade, incluindo vector stores (Chroma, Pinecone, FAISS), document loaders e ferramentas. O ecossistema complementar — \textit{LangGraph} para aplicações stateful baseadas em grafos, \textit{LangServe} para deployment como REST APIs, e \textit{LangSmith} para observabilidade — estende as capacidades do framework além do desenvolvimento local, cobrindo o ciclo completo de produção \cite{langchain2023docs}.
+
 % -----------------------------
-% 2.3 Conceitos Fundamentais
+% 2.3 Abstrações e Interfaces Fundamentais
 % -----------------------------
-\subsection{Conceitos Fundamentais}
-\label{subsec:conceitos}
+\subsection{Abstrações e Interfaces Fundamentais}
+\label{subsec:abstracoes}
 
-% [SUBSEÇÃO]: Chains
-% [PARÁGRAFO 1 - 4-5 linhas]: O que são chains
-% - Sequências de chamadas a componentes
-% - Composição de operações simples em fluxos complexos
-% - Input de um componente é output do anterior
-% - Tipos: LLMChain, SequentialChain, RouterChain
-% - Base para aplicações complexas
+% [PARÁGRAFO 1 - 5-6 linhas]: Interface Runnable
+% - Abstração central que unifica todos os componentes
+% - Métodos padrão: invoke(), stream(), batch()
+% - Permite composição uniforme via LCEL
+% - Base para chains, agents, retrievers, tools
+% - Facilita testabilidade e observabilidade
 
-% [SUBSEÇÃO]: Agents
-% [PARÁGRAFO 2 - 5-6 linhas]: Agentes inteligentes
-% - Entidades que tomam decisões sobre quais ações executar
-% - Baseados em conceito de agentes racionais da IA clássica
-% - Ciclo: Observation → Thought → Action → Observation
-% - Utilizam LLMs para raciocínio e planejamento
-% - Acesso a tools (ferramentas) para interagir com ambiente
-% - Citar: \cite{russell2010artificial} para conceito de agentes
+No núcleo da arquitetura do LangChain encontra-se a interface \textit{Runnable}, uma abstração unificadora que estabelece um contrato padronizado para todos os componentes do framework. Todo \textit{Runnable} implementa três métodos fundamentais: \texttt{invoke()}, para execução síncrona de uma única entrada; \texttt{stream()}, para processamento incremental com emissão de resultados parciais; e \texttt{batch()}, para execução eficiente de múltiplas entradas em paralelo. Essa interface comum permite que componentes heterogêneos — desde templates de prompts e modelos de linguagem até recuperadores de documentos e agentes autônomos — sejam compostos de maneira uniforme através da LangChain Expression Language (LCEL). A padronização via \textit{Runnable} traz benefícios diretos para testabilidade, uma vez que qualquer componente pode ser testado isoladamente com entradas mock, e para observabilidade, pois callbacks e instrumentação podem ser aplicados de forma consistente em toda a cadeia de processamento \cite{langchain2023docs}.
 
-% [SUBSEÇÃO]: Tools
-% [PARÁGRAFO 3 - 3-4 linhas]: Ferramentas para agentes
-% - Interfaces que permitem agentes interagirem com mundo externo
-% - Exemplos: calculadora, buscador web, APIs, bancos de dados
-% - Cada tool tem nome, descrição e função
-% - LLM decide quando e como usar cada tool
+% [PARÁGRAFO 2 - 4-5 linhas]: Categorias de componentes
+% - Model I/O: interface com modelos de linguagem
+% - Retrieval: acesso a dados externos
+% - Composition: orquestração de fluxos complexos
+% - Additional: recursos complementares (memória, callbacks)
+% - Organização alinhada com documentação oficial
 
-% [SUBSEÇÃO]: Memory
-% [PARÁGRAFO 4 - 4-5 linhas]: Sistemas de memória
-% - Armazenamento de contexto conversacional
-% - Tipos: Buffer (últimas N mensagens), Summary (resumo), Entity (entidades)
-% - Essencial para conversas multi-turn
-% - Trade-off: contexto vs. limite de tokens
-% - Estratégias de gerenciamento de memória
+A documentação oficial do LangChain organiza os componentes em quatro categorias principais, refletindo padrões de uso e responsabilidades distintas. \textit{Model I/O} agrupa as abstrações para interação com modelos de linguagem — LLMs, chat models, templates de prompt e parsers de saída. \textit{Retrieval} engloba os mecanismos de acesso a dados externos, incluindo embeddings, vector stores, document loaders e retrievers, fundamentais para implementações de Retrieval-Augmented Generation (RAG). \textit{Composition} reúne as estruturas de orquestração — chains para pipelines sequenciais, agents para tomada de decisão autônoma, e tools que estendem as capacidades dos agentes com acesso a APIs e funcionalidades externas. Por fim, \textit{Additional Resources} abrange recursos complementares como sistemas de memória conversacional e callbacks para logging e monitoramento. Essa taxonomia, alinhada à documentação oficial, facilita a navegação no ecossistema e a compreensão das responsabilidades de cada componente \cite{langchain2023docs}.
 
-% [SUBSEÇÃO]: Prompts
-% [PARÁGRAFO 5 - 3-4 linhas]: Templates e engenharia de prompts
-% - PromptTemplates: estruturas reutilizáveis para prompts
-% - Few-shot learning: exemplos no prompt
-% - Prompt selectors: escolha dinâmica baseada em modelo
-% - Output parsers: estruturação de respostas
+% -----------------------------
+% 2.4 LCEL: Paradigma de Composição
+% -----------------------------
+\subsection{LangChain Expression Language (LCEL)}
+\label{subsec:lcel}
 
-% [SUBSEÇÃO]: Retrievers
-% [PARÁGRAFO 6 - 4-5 linhas]: Recuperação de informação
-% - Interface para buscar documentos relevantes
-% - Integração com vector stores (Chroma, Pinecone, FAISS)
-% - Base para RAG (Retrieval-Augmented Generation)
-% - Embeddings para similaridade semântica
-% - Citar: \cite{lewis2020retrieval} para RAG
+% [PARÁGRAFO 1 - 5-6 linhas]: O que é LCEL
+% - Sintaxe declarativa para compor componentes Runnable
+% - Operador pipe (|): conecta componentes em sequência
+% - Inspirado em Unix pipes e functional programming
+% - Introduzido na v0.2.x como paradigma central
+% - Substitui abstrações legadas como LLMChain
+% - Vantagens: código mais legível, composição clara e explícita
+
+A \textit{LangChain Expression Language} (LCEL) representa o paradigma central de composição no LangChain moderno, introduzida nas versões v0.2.x como uma abstração declarativa para construir \textit{Runnables} a partir de componentes existentes \cite{langchain2023docs}. O operador \textit{pipe} (|) constitui o mecanismo fundamental da LCEL, permitindo conectar componentes em sequência de forma fluente: quando Python encontra \texttt{a | b}, o método \texttt{\_\_or\_\_} do objeto \texttt{b} é invocado, recebendo \texttt{a} como entrada. Essa abordagem, inspirada em \textit{Unix pipes} e programação funcional, substitui abstrações legadas como \texttt{LLMChain}, oferecendo código mais legível, composição explícita e eliminação de chamadas de função aninhadas. A expressão \texttt{chain = prompt | model | parser} exemplifica a sintaxe minimalista: dados fluem da esquerda para a direita através do pipeline, com a saída de cada componente alimentando a entrada do próximo.
+
+% [PARÁGRAFO 2 - 4-5 linhas]: Recursos e capacidades
+% - Suporte nativo a streaming, async, parallelization
+% - RunnableParallel: executar múltiplos runnables em paralelo
+% - RunnableBranch: conditional routing baseado em lógica
+% - RunnablePassthrough: passar dados sem modificação
+% - Fallbacks: retry automático com modelos alternativos
+% - Observabilidade integrada via callbacks
+
+A LCEL oferece capacidades avançadas nativamente integradas ao paradigma de composição. O suporte a \textit{streaming} permite emissão incremental de resultados conforme a cadeia executa, com otimizações para reduzir o tempo até o primeiro token (\textit{time-to-first-token}). As operações assíncronas e em lote (\texttt{ainvoke}, \texttt{astream}, \texttt{batch}) são fornecidas automaticamente para qualquer cadeia LCEL, viabilizando paralelismo e melhor aproveitamento de recursos. Componentes especializados estendem as possibilidades de composição: \texttt{RunnableParallel} executa múltiplos \textit{runnables} concorrentemente dentro de um único passo da cadeia, aceitando especificações em dicionário para definir ramificações paralelas; \texttt{RunnableBranch} implementa roteamento condicional baseado em lógica de negócio; \texttt{RunnablePassthrough} preserva dados de entrada inalterados enquanto permite processamento em outras partes da cadeia. Mecanismos de \textit{fallback} possibilitam \textit{retry} automático com modelos alternativos em caso de falhas, e a observabilidade é integrada: todas as etapas são automaticamente registradas no \textit{LangSmith} para depuração e monitoramento \cite{langchain2023docs}.
 
 % ============================================================
 % 3. COMPONENTES PRINCIPAIS
-% Estimativa: 2 páginas
+% Estimativa: 2.5-3 páginas
 % ============================================================
 \section{Componentes Principais}
 \label{sec:componentes}
 
-% [PARÁGRAFO INTRODUTÓRIO - 2-3 linhas]: Overview da seção
-% - Detalhamento dos módulos principais do LangChain
-% - Exemplos práticos de uso de cada componente
+% [PARÁGRAFO INTRODUTÓRIO - 3-4 linhas]: Overview da seção
+% - LangChain organiza componentes em 4 categorias conforme documentação oficial
+% - Model I/O: interface com modelos de linguagem
+% - Retrieval: acesso a dados externos
+% - Composition: orquestração de fluxos e agentes
+% - Additional: recursos complementares (memória, callbacks)
 
 % -----------------------------
 % 3.1 Model I/O
@@ -332,204 +367,150 @@ Em paralelo, formou-se um ecossistema complementar. O \textit{LangChain Core} pe
 \subsection{Model I/O}
 \label{subsec:model-io}
 
-% [PARÁGRAFO 1 - 4-5 linhas]: LLMs e Chat Models
-% - LLMs: interface para modelos de completion (GPT-3, Cohere)
-% - Chat Models: interface para modelos conversacionais (GPT-4, Claude)
-% - Abstração unificada: trocar modelo sem mudar código
-% - Suporte para streaming, callbacks, timeouts
-% - Configuração de parâmetros: temperature, max_tokens, etc.
+% [PARÁGRAFO 1 - 5-6 linhas]: LLMs e Chat Models
+% - LLMs: interface para modelos de completion (text-davinci, gpt-3.5-turbo-instruct)
+% - Chat Models: interface para modelos conversacionais (GPT-4, Claude, Gemini)
+% - Abstração unificada: trocar provedor sem modificar código
+% - Suporte para streaming de respostas, callbacks, timeouts
+% - Configuração de parâmetros: temperature, max_tokens, top_p, etc.
+% - Integrações: langchain-openai, langchain-anthropic, langchain-google-genai
 
-% [CÓDIGO 1]: Exemplo básico de LLM usage
-\begin{lstlisting}[caption={Exemplo de uso de LLM com LangChain},label={lst:llm-basic}]
-from langchain.llms import OpenAI
-from langchain.prompts import PromptTemplate
-from langchain.chains import LLMChain
+O componente \textit{Model I/O} define abstrações para interação com modelos de linguagem. \textit{LLMs} são modelos de \textit{completion} (como \texttt{gpt-3.5-turbo-instruct}) que geram continuações de texto, enquanto \textit{Chat Models} (GPT-4, Claude 3, Gemini) processam conversações estruturadas com papéis \textit{system}, \textit{user} e \textit{assistant}. A interface \textit{Runnable} unifica o acesso a diferentes provedores: pacotes como \textit{langchain-openai} e \textit{langchain-anthropic} expõem métodos padronizados (\texttt{invoke()}, \texttt{stream()}, \texttt{batch()}), permitindo trocar provedores sem modificar código \cite{langchain2023docs}. Parâmetros como \texttt{temperature}, \texttt{max\_tokens} e \texttt{top\_p} têm configuração uniforme entre provedores. O suporte a \textit{streaming} permite emissão incremental de respostas, melhorando a experiência em aplicações interativas.
 
-# Configurar LLM
-llm = OpenAI(temperature=0.7, model="gpt-3.5-turbo")
+% [PARÁGRAFO 2 - 4-5 linhas]: Prompts e PromptTemplates
+% - PromptTemplates: estruturas reutilizáveis com variáveis dinâmicas
+% - ChatPromptTemplate: templates para modelos conversacionais
+% - Few-shot learning: incorporar exemplos no prompt
+% - Prompt selectors: escolha automática baseada no modelo
+% - Separação clara entre lógica e dados
 
-# Criar prompt template
-template = """Voce e um assistente especializado em {area}.
-Pergunta: {pergunta}
-Resposta:"""
-prompt = PromptTemplate(
-    input_variables=["area", "pergunta"],
-    template=template
-)
+Os \textbf{\textit{PromptTemplates}} são estruturas reutilizáveis para construção de prompts com variáveis dinâmicas. \texttt{PromptTemplate} aceita placeholders em sintaxe f-string ou Jinja2, enquanto \texttt{ChatPromptTemplate} compõe sequências de mensagens para modelos conversacionais com papéis \textit{system}, \textit{human} e \textit{ai}, incluindo \texttt{MessagesPlaceholder} para injeção de histórico \cite{langchain2023docs}. Ambas implementam a interface \textit{Runnable}, integrando-se ao LCEL via operador pipe (|). A funcionalidade de \textit{few-shot learning} permite incorporar exemplos no template, e \textit{prompt selectors} escolhem automaticamente templates baseados nas capacidades do modelo.
 
-# Criar e executar chain
-chain = LLMChain(llm=llm, prompt=prompt)
-resposta = chain.run(
-    area="inteligencia artificial",
-    pergunta="O que sao agentes inteligentes?"
-)
-print(resposta)
-\end{lstlisting}
-
-% [PARÁGRAFO 2 - 3-4 linhas]: Output Parsers
-% - Estruturação de respostas do LLM
-% - Tipos: List, JSON, Structured, Pydantic
-% - Validação automática de outputs
+% [PARÁGRAFO 3 - 4-5 linhas]: Output Parsers
+% - Estruturação automática de respostas do LLM
+% - Tipos: StrOutputParser, JsonOutputParser, PydanticOutputParser
+% - Validação automática de outputs com schemas
 % - Retry logic para outputs mal-formados
+% - Integração com Pydantic para type safety
+
+Os \textbf{\textit{Output Parsers}} estruturam respostas de LLMs em objetos tipados. \texttt{StrOutputParser} retorna texto sem transformações; \texttt{JsonOutputParser} formata a saída como JSON para integração com APIs; \texttt{PydanticOutputParser} converte respostas em modelos Pydantic validados, garantindo \textit{type safety} \cite{langchain2023docs}. A validação automática detecta outputs malformados, e \textit{retry logic} permite regeneração quando a estrutura é inválida. Como implementam a interface \textit{Runnable}, os parsers integram-se em cadeias LCEL: \texttt{prompt | model | parser}.
 
 % -----------------------------
-% 3.2 Retrieval e RAG
+% 3.2 Retrieval
 % -----------------------------
-\subsection{Retrieval e RAG}
-\label{subsec:retrieval}
+\subsection{Retrieval Augmented Generation (RAG)}
+\label{subsec:rag}
 
-% [PARÁGRAFO 1 - 5-6 linhas]: Retrieval-Augmented Generation
+% [PARÁGRAFO 1 - 5-6 linhas]: Retrieval-Augmented Generation (RAG)
 % - Problema: LLMs têm conhecimento limitado ao training data
-% - Solução: combinar LLM com busca em base de conhecimento externa
-% - Processo: 1) Criar embeddings de documentos, 2) Buscar docs relevantes,
-%   3) Incluir docs no contexto do LLM, 4) Gerar resposta fundamentada
-% - Vantagens: informação atualizada, citações, redução de alucinações
+% - Solução: combinar geração com busca em base de conhecimento externa
+% - Processo: embeddings → busca por similaridade → contexto → geração
+% - Vantagens: informação atualizada, redução de alucinações, citação de fontes
+% - Caso de uso principal: question-answering sobre documentos corporativos
 % - Citar: \cite{lewis2020retrieval} para conceito de RAG
 
-% [PARÁGRAFO 2 - 4-5 linhas]: Vector Stores
-% - Armazenamento de embeddings para busca por similaridade
-% - Integrações: Chroma, Pinecone, FAISS, Weaviate, Milvus
-% - Operações: ingest (adicionar docs), search (buscar similares)
-% - Métricas: cosine similarity, euclidean distance
-% - Indexação para buscas eficientes
+LLMs possuem conhecimento limitado aos dados de treinamento, tornando-se desatualizados e incapazes de acessar informações corporativas específicas. \textit{Retrieval-Augmented Generation} (RAG) combina capacidade generativa com busca em bases de conhecimento externas \cite{lewis2020retrieval}. O fluxo RAG: documentos são convertidos em \textit{embeddings}, a consulta é vetorizada, busca por similaridade recupera documentos relevantes, que são injetados como contexto no prompt do LLM. Vantagens incluem acesso a informação atualizada sem retreinamento, redução de alucinações via \textit{grounding} em fontes verificáveis, e citação de fontes. O caso de uso principal é \textit{question-answering} sobre documentos corporativos (manuais, políticas, relatórios) não presentes nos dados de treinamento \cite{langchain2023docs}.
 
-% [PARÁGRAFO 3 - 3-4 linhas]: Document Loaders
-% - Carregamento de dados de múltiplas fontes
-% - Suporte: PDF, Web, SQL, APIs, Google Drive, Notion
-% - Text splitting: dividir documentos grandes em chunks
-% - Metadata preservation: manter informações contextuais
+% [PARÁGRAFO 2 - 4-5 linhas]: Embeddings e Vector Stores
+% - Embeddings: representações vetoriais de texto para similaridade semântica
+% - OpenAIEmbeddings, HuggingFaceEmbeddings, CohereEmbeddings
+% - Vector Stores: Chroma, Pinecone, FAISS, Weaviate, Qdrant
+% - Operações: similarity_search, max_marginal_relevance_search
+% - Métricas: cosine similarity, euclidean distance, dot product
 
-% [CÓDIGO 2]: Exemplo de RAG implementation
-\begin{lstlisting}[caption={Implementação básica de RAG com LangChain},label={lst:rag}]
-from langchain.document_loaders import TextLoader
-from langchain.text_splitter import CharacterTextSplitter
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.vectorstores import Chroma
-from langchain.chains import RetrievalQA
-from langchain.llms import OpenAI
+A implementação de RAG usa \textit{embeddings} e \textit{vector stores}. \textit{Embeddings} são representações vetoriais que capturam semântica textual, onde proximidade vetorial reflete similaridade. O LangChain suporta múltiplos provedores: \texttt{OpenAIEmbeddings} (\texttt{text-embedding-3-small}), \texttt{HuggingFaceEmbeddings} (\texttt{sentence-transformers}), e \texttt{CohereEmbeddings} (multilíngue) \cite{langchain2023docs}. \textit{Vector stores} armazenam e buscam vetores eficientemente: \texttt{Chroma} (open-source), \texttt{Pinecone} (gerenciado), \texttt{FAISS} (Meta), \texttt{Weaviate} e \texttt{Qdrant}. Operações incluem \texttt{similarity\_search} (recupera \textit{k} documentos mais próximos) e \texttt{max\_marginal\_relevance\_search} (diversifica resultados). Métricas suportadas: similaridade cosseno, distância euclidiana e produto escalar.
 
-# 1. Carregar documentos
-loader = TextLoader("conhecimento.txt")
-documents = loader.load()
+% [PARÁGRAFO 3 - 4-5 linhas]: Document Loaders e Text Splitters
+% - Document Loaders: carregamento de múltiplas fontes (PDF, Web, SQL, APIs)
+% - PyPDFLoader, WebBaseLoader, UnstructuredLoader
+% - Text Splitters: divisão de documentos em chunks processáveis
+% - CharacterTextSplitter, RecursiveCharacterTextSplitter
+% - Chunk size, overlap e preservação de metadata
 
-# 2. Dividir em chunks
-text_splitter = CharacterTextSplitter(
-    chunk_size=1000,
-    chunk_overlap=200
-)
-docs = text_splitter.split_documents(documents)
+A ingestão em sistemas RAG requer carregamento de documentos e divisão em \textit{chunks}. \textbf{\textit{Document Loaders}} conectam múltiplas fontes: \texttt{PyPDFLoader} (PDF), \texttt{WebBaseLoader} (web scraping), \texttt{UnstructuredLoader} (Word, PowerPoint, markdown), além de SQL e APIs REST. Cada loader retorna objetos \texttt{Document} com texto e metadados preservados. \textbf{\textit{Text Splitters}} dividem documentos longos em segmentos que cabem na janela de contexto: \texttt{CharacterTextSplitter} divide por caracteres em delimitadores, e \texttt{RecursiveCharacterTextSplitter} preserva estrutura semântica dividindo hierarquicamente por parágrafos, sentenças e palavras \cite{langchain2023docs}. Parâmetros principais: \texttt{chunk\_size} (tamanho máximo), \texttt{chunk\_overlap} (sobreposição para manter contexto), e metadados para rastrear origens.
 
-# 3. Criar embeddings e vector store
-embeddings = OpenAIEmbeddings()
-vectorstore = Chroma.from_documents(docs, embeddings)
+% [PARÁGRAFO 4 - 3-4 linhas]: Retrievers
+% - Interface padronizada para busca de documentos relevantes
+% - VectorStoreRetriever: busca por similaridade em vector store
+% - MultiQueryRetriever: múltiplas queries para melhor cobertura
+% - Configuração: top_k, score_threshold, search_type
 
-# 4. Criar retriever
-retriever = vectorstore.as_retriever(
-    search_kwargs={"k": 3}
-)
-
-# 5. Criar QA chain
-qa_chain = RetrievalQA.from_chain_type(
-    llm=OpenAI(temperature=0),
-    chain_type="stuff",
-    retriever=retriever,
-    return_source_documents=True
-)
-
-# 6. Fazer pergunta
-resultado = qa_chain({"query": "Explique o conceito X"})
-print(resultado["result"])
-print("Fontes:", resultado["source_documents"])
-\end{lstlisting}
+A abstração \textbf{\textit{Retriever}} unifica busca de documentos, implementando a interface \textit{Runnable} para integração com LCEL. \texttt{VectorStoreRetriever} encapsula busca por similaridade, configurando \texttt{search\_type} (\texttt{similarity}, \texttt{mmr}, \texttt{similarity\_score\_threshold}), \texttt{k} (número de documentos) e \texttt{score\_threshold}. Retrievers avançados: \texttt{MultiQueryRetriever} gera variações da consulta via LLM para melhor cobertura; \texttt{ContextualCompressionRetriever} comprime documentos mantendo apenas trechos relevantes. Como \textit{Runnables}, compõem-se em cadeias: \texttt{retriever | format\_docs | prompt | model | parser} é um pipeline RAG completo \cite{langchain2023docs}.
 
 % -----------------------------
-% 3.3 Agents e Tools
+% 3.3 Composition
 % -----------------------------
-\subsection{Agents e Tools}
-\label{subsec:agents}
+\subsection{Composition}
+\label{subsec:composition}
 
-% [PARÁGRAFO 1 - 5-6 linhas]: Arquitetura de agentes
-% - Agent executor: loop principal de raciocínio
-% - Tipos de agentes: Zero-shot ReAct, Conversational, OpenAI Functions
-% - ReAct pattern: Reasoning + Acting intercalados
-% - Observation → Thought → Action → Repeat
-% - LLM decide: qual tool usar? com quais parâmetros? quando parar?
-% - Citar: \cite{yao2023react} para ReAct pattern
+% [PARÁGRAFO 1 - 5-6 linhas]: Chains
+% - Sequências de operações compostas via LCEL
+% - Padrão moderno: usar pipe operator (|) em vez de classes legadas
+% - LLMChain, SequentialChain (deprecated): usar LCEL
+% - Chains como Runnables: invoke(), stream(), batch()
+% - Composição declarativa: prompt | model | parser
+% - Vantagens: código mais limpo, streaming nativo, paralelização
 
-% [PARÁGRAFO 2 - 4-5 linhas]: Tools disponíveis
-% - Built-in: Wikipedia, DuckDuckGo, Calculator, Python REPL
-% - APIs: Weather, Stock prices, News
-% - Custom tools: criar ferramentas específicas
+Cadeias (\textit{chains}) são construídas via LangChain Expression Language (LCEL), substituindo classes legadas (\texttt{LLMChain}, \texttt{SequentialChain}) por composição declarativa com o operador pipe (|) \cite{langchain2023docs}. Uma \textit{chain} é uma sequência de operações — tipicamente \texttt{prompt | model | parser} — onde cada componente implementa \textit{Runnable}, expondo \texttt{invoke()} (execução síncrona), \texttt{stream()} (incremental) e \texttt{batch()} (paralelização). LCEL oferece código conciso com fluxo explícito, \textit{streaming} nativo e paralelização automática via \texttt{RunnableParallel}. Exemplos: cadeias RAG (\texttt{retriever | format\_docs | prompt | model | parser}), sumarização (\texttt{loader | splitter | map\_chain | reduce\_chain}), e validação iterativa (\texttt{prompt | model | validator | retry\_chain}).
+
+% [PARÁGRAFO 2 - 5-6 linhas]: Agents
+% - Entidades autônomas que decidem ações para atingir objetivos
+% - Baseados em agentes racionais da IA clássica \cite{russell2010artificial}
+% - Agent executor: loop de raciocínio (Observation → Thought → Action)
+% - Tipos: Zero-shot ReAct, Structured Chat, OpenAI Functions/Tools
+% - ReAct pattern: Reasoning + Acting intercalados \cite{yao2023react}
+% - LLM como motor de planejamento e tomada de decisão
+
+Agentes (\textit{agents}) são entidades autônomas que decidem ações para atingir objetivos, baseados em agentes racionais da IA clássica \cite{russell2010artificial}. Um \textit{agent executor} implementa loop iterativo: observa estado (\textit{Observation}), formula pensamento (\textit{Thought}), e executa ação (\textit{Action}) — invocando ferramentas, consultando bases, ou retornando resposta final. O padrão \textit{ReAct} (Reasoning + Acting) intercala raciocínio e ação, permitindo que o LLM use feedback para refinar planejamento \cite{yao2023react}. Tipos de agentes: \texttt{Zero-shot ReAct} (decisões sem contexto), \texttt{Structured Chat} (conversações complexas), \texttt{OpenAI Functions/Tools} (\textit{function calling} nativo). O LLM atua como motor de planejamento: dado histórico e ferramentas disponíveis, gera ações estruturadas que o executor interpreta e executa.
+
+% [PARÁGRAFO 3 - 4-5 linhas]: Tools
+% - Interfaces que estendem capacidades dos agents
+% - Built-in: DuckDuckGoSearchRun, WikipediaQueryRun, Calculator
+% - Integração com APIs: Weather, Stock prices, News
+% - Custom tools: @tool decorator para criar ferramentas específicas
 % - Tool description: LLM usa descrição para decidir quando usar
-% - Combinação de múltiplos tools para tarefas complexas
 
-% [PARÁGRAFO 3 - 3-4 linhas]: Limitações de agentes
-% - Dependência de raciocínio do LLM (pode errar)
-% - Custos: múltiplas chamadas ao LLM
-% - Loops infinitos: agente não converge
-% - Necessidade de rate limiting e error handling
+Ferramentas (\textit{tools}) estendem capacidades dos agentes: busca web, APIs, cálculos, manipulação de dados e sistemas externos \cite{langchain2023docs}. Ferramentas \textit{built-in}: \texttt{DuckDuckGoSearchRun} (busca web), \texttt{WikipediaQueryRun} (Wikipedia), \texttt{Calculator} (expressões matemáticas). Integrações com APIs: \texttt{OpenWeatherMap} (clima), \texttt{AlphaVantage} (finanças), \texttt{NewsAPI} (notícias). O decorador \texttt{@tool} cria ferramentas customizadas: o desenvolvedor implementa a lógica e fornece \textit{description} textual que o LLM usa para decidir quando invocá-la. O modelo lê descrições disponíveis, compara com objetivo, seleciona ferramenta e fornece parâmetros. O executor invoca a ferramenta e retorna resultado como nova observação no ciclo ReAct.
+
+% [PARÁGRAFO 4 - 3-4 linhas]: Limitações de Agents
+% - Dependência da qualidade do raciocínio do LLM
+% - Custos elevados: múltiplas chamadas ao modelo
+% - Riscos: loops infinitos, erros de execução
+% - Necessidade de guardrails, timeouts e error handling
+
+Agentes apresentam limitações em produção. A qualidade do raciocínio depende do LLM: modelos menos capazes tomam decisões subótimas, selecionam ferramentas inadequadas ou geram parâmetros mal-formados. Custos são elevados: cada ciclo ReAct requer chamada ao modelo, e tarefas complexas exigem dezenas de iterações. Riscos incluem \textit{loops infinitos} (agente não reconhece objetivo atingido) e \textit{erros de execução} (entradas inválidas, timeouts). Aplicações robustas exigem \textit{guardrails} (restrições sobre ferramentas), \textit{timeouts} (limites de iterações/tempo) e \textit{error handling} robusto. Em cenários críticos, recomenda-se \textit{human-in-the-loop} para aprovação de decisões importantes.
 
 % -----------------------------
-% 3.4 Memory Systems
+% 3.4 Recursos Adicionais
 % -----------------------------
-\subsection{Memory Systems}
-\label{subsec:memory}
+\subsection{Recursos Adicionais}
+\label{subsec:recursos-adicionais}
 
-% [PARÁGRAFO 1 - 4-5 linhas]: Tipos de memória
-% - ConversationBufferMemory: armazena todas mensagens
-% - ConversationBufferWindowMemory: últimas K mensagens
-% - ConversationSummaryMemory: resumo progressivo da conversa
-% - ConversationEntityMemory: extrai e rastreia entidades
+% [PARÁGRAFO 1 - 5-6 linhas]: Memory Systems
+% - Gerenciamento de contexto conversacional para interações multi-turn
+% - ConversationBufferMemory: armazena histórico completo
+% - ConversationBufferWindowMemory: mantém últimas K mensagens
+% - ConversationSummaryMemory: resumo progressivo para economizar tokens
+% - ConversationEntityMemory: rastreia entidades ao longo da conversa
 % - VectorStoreRetrieverMemory: busca por similaridade em histórico
 
-% [PARÁGRAFO 2 - 3-4 linhas]: Gestão de contexto
-% - Token limits: GPT-4 (8K/32K), Claude (100K+)
-% - Estratégias: window, summarization, selective retention
-% - Trade-off: contexto completo vs. custo e latência
-% - Importância para experiência conversacional
+Aplicações conversacionais multi-turn requerem \textbf{memória} para manter contexto. O LangChain oferece estratégias de gerenciamento \cite{langchain2023docs}: \texttt{ConversationBufferMemory} armazena histórico completo, ideal para interações curtas; \texttt{ConversationBufferWindowMemory} mantém últimas $K$ mensagens em janela deslizante, equilibrando contexto e eficiência; \texttt{ConversationSummaryMemory} condensa mensagens antigas em resumos, preservando informação essencial com menos tokens — valiosa em conversas extensas; \texttt{ConversationEntityMemory} rastreia entidades (nomes, datas, preferências), mantendo conhecimento específico sem histórico textual completo, útil para assistentes que recordam fatos sobre usuários.
 
-% -----------------------------
-% 3.5 LCEL (LangChain Expression Language)
-% -----------------------------
-\subsection{LangChain Expression Language}
-\label{subsec:lcel}
+% [PARÁGRAFO 2 - 4-5 linhas]: Gestão de Contexto
+% - Limitações de janela: GPT-4 (8K/32K/128K), Claude (100K/200K), Gemini (1M+)
+% - Estratégias: windowing, summarization, selective retention
+% - Trade-off: contexto completo vs. custo, latência e tokens
+% - Importância crítica para experiência conversacional natural
 
-% [PARÁGRAFO 1 - 4-5 linhas]: O que é LCEL
-% - Sintaxe declarativa para compor chains
-% - Operador pipe (|): conecta componentes
-% - Inspirado em Unix pipes e functional programming
-% - Vantagens: código mais legível, composição clara
-% - Suporte nativo a streaming, async, parallelization
+A escolha de estratégia considera limitações de janela: GPT-4 (8K/32K/128K tokens), Claude 3 (200K), Gemini 1.5 (1M+) \cite{openai2023gpt4, anthropic2023claude}. Apesar da expansão, três fatores motivam gerenciamento: custo proporcional a tokens, latência crescente, e degradação em contextos longos (\textit{lost in the middle}). As estratégias implementam trade-offs entre contexto completo e eficiência. Gestão adequada é crítica: perder informações frustra usuários; contexto excessivo degrada qualidade e viabilidade econômica.
 
-% [CÓDIGO 3]: Exemplo com LCEL
-\begin{lstlisting}[caption={Exemplo de chain usando LCEL},label={lst:lcel}]
-from langchain.prompts import ChatPromptTemplate
-from langchain.chat_models import ChatOpenAI
-from langchain.schema.output_parser import StrOutputParser
+% [PARÁGRAFO 3 - 3-4 linhas]: Callbacks e Observabilidade
+% - Sistema de callbacks para logging, debugging e monitoring
+% - Rastreamento de tokens, custos e latência
+% - Integração com LangSmith para observabilidade em produção
+% - StdOutCallbackHandler, FileCallbackHandler, custom callbacks
 
-# Definir componentes
-prompt = ChatPromptTemplate.from_template(
-    "Traduza para {idioma}: {texto}"
-)
-model = ChatOpenAI()
-parser = StrOutputParser()
-
-# Compor chain usando LCEL
-chain = prompt | model | parser
-
-# Executar
-resultado = chain.invoke({
-    "idioma": "frances",
-    "texto": "Hello, how are you?"
-})
-print(resultado)  # "Bonjour, comment allez-vous?"
-\end{lstlisting}
-
-% [PARÁGRAFO 2 - 3-4 linhas]: Recursos avançados
-% - RunnableParallel: executar múltiplos runnables em paralelo
-% - RunnableBranch: conditional routing
-% - RunnablePassthrough: passar dados sem modificação
-% - Fallbacks: retry com modelos alternativos
+O sistema de \textbf{callbacks} fornece hooks para instrumentação, permitindo observabilidade em cada etapa — invocações de modelos, recuperações e execuções de ferramentas \cite{langchain2023docs}. Callbacks capturam eventos: início/término de chamadas, tokens, custos e latências, essenciais para depuração e monitoramento. Handlers pré-configurados: \texttt{StdOutCallbackHandler} (console), \texttt{FileCallbackHandler} (arquivo); handlers customizados estendem \texttt{BaseCallbackHandler}. A integração com \textbf{LangSmith} permite rastreamento distribuído em produção, visualização de fluxos, debugging de cadeias e coleta de datasets, consolidando o framework como solução completa.
 
 % ============================================================
 % 4. APLICAÇÕES PRÁTICAS
