@@ -5,11 +5,9 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{sbc-template}[2024/11/04 SBC Template Style]
 
-% Page layout - SBC standard margins
-\RequirePackage[a4paper,top=3cm,bottom=2.54cm,left=3cm,right=3cm]{geometry}
-
-% Two-column layout
-\RequirePackage{multicol}
+% Page layout - SBC standard margins (official format)
+% Top: 3.5cm, Bottom: 2.5cm, Left/Right: 3.0cm
+\RequirePackage[a4paper,top=3.5cm,bottom=2.5cm,left=3cm,right=3cm]{geometry}
 
 % Font and encoding
 \RequirePackage{times}
@@ -34,40 +32,50 @@
 
 % Title formatting
 \renewcommand{\maketitle}{%
-  \twocolumn[
-    \begin{center}
-      {\fontsize{14}{17}\selectfont\bfseries\@title\par}
-      \vspace{1em}
-      {\fontsize{12}{14}\selectfont\@author\par}
-      \vspace{0.5em}
-      {\fontsize{10}{12}\selectfont\@address\par}
-      \vspace{0.5em}
-      {\fontsize{10}{12}\selectfont\@email\par}
-      \vspace{1em}
-    \end{center}
-  ]
+  \begin{center}
+    {\fontsize{14}{17}\selectfont\bfseries\@title\par}
+    \vspace{1em}
+    {\fontsize{12}{14}\selectfont\@author\par}
+    \vspace{0.5em}
+    {\fontsize{10}{12}\selectfont\@address\par}
+    \vspace{0.5em}
+    {\fontsize{10}{12}\selectfont\@email\par}
+    \vspace{1em}
+  \end{center}
 }
 
 % Abstract environment for Resumo (Portuguese)
+% Official SBC: 0.8cm indentation on both sides
 \renewenvironment{abstract}{%
-  \small
   \begin{center}
     \bfseries Resumo
   \end{center}
-  \quotation
+  \vspace{0.2em}
+  \begin{list}{}{%
+    \setlength{\leftmargin}{0.8cm}%
+    \setlength{\rightmargin}{0.8cm}%
+  }%
+  \item\relax
 }{%
-  \endquotation
+  \end{list}
+  \vspace{0.3em}
 }
 
 % Abstract environment for Abstract (English)
+% Official SBC: 0.8cm indentation on both sides
 \newenvironment{englishabstract}{%
-  \small
   \begin{center}
     \bfseries Abstract
   \end{center}
-  \quotation
+  \vspace{0.2em}
+  \begin{list}{}{%
+    \setlength{\leftmargin}{0.8cm}%
+    \setlength{\rightmargin}{0.8cm}%
+  }%
+  \item\relax
 }{%
-  \endquotation
+  \end{list}
+  \vspace{1em}
 }
 
 % Bibliography style
@@ -77,11 +85,16 @@
 % Caption formatting
 \RequirePackage[font=small,labelfont=bf]{caption}
 
-% Paragraph spacing
-\setlength{\parindent}{0pt}
-\setlength{\parskip}{6pt}
+% Paragraph formatting - SBC style with indentation
+\setlength{\parindent}{1.27cm}
+\setlength{\parskip}{0pt}
 
 % Line spacing
 \renewcommand{\baselinestretch}{1.0}
+
+% Better text justification
+\tolerance=5000
+\emergencystretch=10pt
+\hfuzz=0.5pt
 
 \endinput
