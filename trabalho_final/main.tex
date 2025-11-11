@@ -89,31 +89,6 @@ Este relatório analisa a arquitetura do LangChain, comparando-o com frameworks 
 
 \end{abstract}
 
-% ============================================================
-% ABSTRACT (English)
-% ============================================================
-% INSTRUÇÕES: Traduzir o resumo para inglês mantendo estrutura similar
-
-\begin{englishabstract}
-% [PARAGRAPH 1 - 3-4 lines]: Contextualize LLM growth
-% - Mention GPT-4, Claude, Llama 2
-% - Problem: how to integrate these models in real applications?
-% - Challenges: context management, memory, integration with external data
-
-% [PARAGRAPH 2 - 4-5 lines]: Present LangChain
-% - Open-source framework created in 2022
-% - Goal: simplify LLM application development
-% - Main components: chains, agents, memory, tools
-% - Support for multiple models and integrations
-
-% [PARAGRAPH 3 - 2-3 lines]: Paper contributions
-% - Architectural analysis of the framework
-% - Comparison with alternatives (LlamaIndex, Semantic Kernel)
-% - Discussion of practical use cases
-% - Critical evaluation of advantages and limitations
-
-\textbf{Keywords}: LangChain, Language Models, LLMs, Agents, RAG, Artificial Intelligence
-\end{englishabstract}
 
 % ============================================================
 % 1. INTRODUÇÃO
@@ -168,13 +143,13 @@ Nas últimas décadas, e em especial no biênio 2022–2023, assistimos a uma ve
 
 Entretanto, a disponibilidade de modelos poderosos expõe lacunas práticas para sua integração em aplicações reais. Interfaces de API simples nem sempre atendem às necessidades de aplicações complexas: há desafios no gerenciamento do contexto e da memória conversacional, na integração segura e eficiente com bases de conhecimento externas, na execução de raciocínios multi-etapa (multi-step reasoning) e na orquestração do uso de ferramentas externas. Além disso, aspectos econômicos e de custo computacional — por exemplo, otimização de prompts e seleção de janelas de contexto — tornam necessário um nível adicional de engenharia além do uso direto do modelo, criando um gap entre as capacidades dos modelos e a produção de aplicações robustas.
 
-Para suprir esse gap, surgiram frameworks de orquestração que abstraem complexidades e padronizam padrões de integração. O LangChain, criado em outubro de 2022 por Harrison Chase, é um framework open-source cujo propósito é facilitar a construção de aplicações baseadas em LLMs. Ele oferece componentes modulares — \textit{chains}, \textit{agents}, \textit{memory} e \textit{tools} — e integrações com múltiplos provedores de modelos, permitindo a composição de pipelines complexos e a instrumentação de agentes que interagem com fontes externas. O projeto possui documentação extensa e forte presença na comunidade de desenvolvedores, sendo mantido em repositório público com ampla adoção. \cite{langchain2023docs, langchain2023github}
+Para suprir esse gap, surgiram frameworks de orquestração que abstraem complexidades e padronizam padrões de integração. O LangChain é um desses frameworks, oferecendo componentes modulares para composição de pipelines complexos com LLMs \cite{langchain2023docs, langchain2023github}.
 
 A motivação deste trabalho reside na relevância acadêmica e prática de compreender e sistematizar padrões de engenharia para aplicações com LLMs. Ao analisar ferramentas emergentes como o LangChain, este relatório conecta temas centrais da IA contemporânea — agentes autônomos, representação de conhecimento e processamento de linguagem natural — com práticas de engenharia de software que são essenciais para a formação de desenvolvedores e pesquisadores.
 
 Os objetivos deste artigo são: (i) apresentar a arquitetura e os componentes principais do LangChain; (ii) analisar casos de uso práticos e padrões de implementação; (iii) comparar o framework com alternativas relevantes; e (iv) discutir limitações, desafios e direções futuras para pesquisa e engenharia nessa área.
 
-A estrutura do artigo segue a sequência: Seção~\ref{sec:arquitetura} (arquitetura do LangChain), Seção~\ref{sec:componentes} (componentes principais), Seção~\ref{sec:aplicacoes} (aplicações práticas), Seção~\ref{sec:comparacao} (análise comparativa) e Seção~\ref{sec:conclusao} (conclusões e trabalhos futuros).
+A estrutura do artigo segue a sequência: Seção~\ref{sec:arquitetura} (arquitetura do LangChain), Seção~\ref{sec:componentes} (componentes principais), Seção~\ref{sec:aplicacoes} (aplicações práticas) e Seção~\ref{sec:comparacao} (análise comparativa).
 
 
 % ============================================================
@@ -213,15 +188,7 @@ O LangChain surgiu em outubro de 2022, idealizado por Harrison Chase, em um cont
 % - v0.2.x (2023-2024): LangChain Expression Language (LCEL)
 % - Tendência: modularização crescente e melhor type safety
 
-Do ponto de vista de versões, a linha v0.0.x (2022–início de 2023) forneceu os blocos fundamentais (templates de \textit{prompt}, LLM/Chat models e \textit{chains}). Ao longo de 2023, as releases v0.1.x amadureceram o suporte a \textit{agents} e \textit{tools}, possibilitando ciclos de raciocínio e uso de ferramentas externas. Entre 2023 e 2024, a v0.2.x introduziu a \textit{LangChain Expression Language} (LCEL), uma sintaxe declarativa baseada em \textit{runnables} e composição com \textit{pipe}, com ênfase em modularização, paralelismo e melhor segurança de tipos \cite{langchain2023docs}.
-
-% [PARÁGRAFO 3 - 3-4 linhas]: Ecossistema LangChain
-% - LangChain Core: biblioteca principal
-% - LangSmith: plataforma de debugging e monitoring
-% - LangServe: deployment de aplicações
-% - LangGraph: orquestração de graphs complexos
-
-Em paralelo, formou-se um ecossistema complementar ao redor do \textit{LangChain Core}: o \textit{LangSmith} para depuração e monitoramento; o \textit{LangServe} para publicação de aplicações como APIs REST; e o \textit{LangGraph} para orquestração baseada em grafos com controle de estado. Juntos, esses componentes viabilizam um ciclo \textit{end-to-end} — do desenvolvimento local à observabilidade em produção \cite{langchain2023docs, langsmith2023}.
+A evolução do framework trouxe amadurecimento progressivo: a linha v0.0.x (2022–início de 2023) forneceu os blocos fundamentais, as versões v0.1.x (2023) introduziram \textit{agents} e \textit{tools}, e a v0.2.x (2023-2024) introduziu a \textit{LangChain Expression Language} (LCEL), uma sintaxe declarativa baseada em \textit{runnables} que permite composição via operador \textit{pipe}, com ênfase em modularização e paralelismo \cite{langchain2023docs}.
 
 % -----------------------------
 % 2.2 Arquitetura Geral
@@ -310,7 +277,7 @@ A Figura~\ref{fig:arquitetura} ilustra a organização modular baseada em pacote
 % - Base para chains, agents, retrievers, tools
 % - Facilita testabilidade e observabilidade
 
-No núcleo da arquitetura do LangChain encontra-se a interface \textit{Runnable}, uma abstração unificadora que estabelece um contrato padronizado para todos os componentes do framework. Todo \textit{Runnable} implementa três métodos fundamentais: \texttt{invoke()}, para execução síncrona de uma única entrada; \texttt{stream()}, para processamento incremental com emissão de resultados parciais; e \texttt{batch()}, para execução eficiente de múltiplas entradas em paralelo. Essa interface comum permite que componentes heterogêneos — desde templates de prompts e modelos de linguagem até recuperadores de documentos e agentes autônomos — sejam compostos de maneira uniforme através da LangChain Expression Language (LCEL). A padronização via \textit{Runnable} traz benefícios diretos para testabilidade, uma vez que qualquer componente pode ser testado isoladamente com entradas mock, e para observabilidade, pois callbacks e instrumentação podem ser aplicados de forma consistente em toda a cadeia de processamento \cite{langchain2023docs}.
+No núcleo da arquitetura do LangChain encontra-se a interface \textit{Runnable}, uma abstração unificadora que estabelece um contrato padronizado para todos os componentes do framework. Todo \textit{Runnable} implementa três métodos fundamentais: \texttt{invoke()} (execução síncrona), \texttt{stream()} (processamento incremental) e \texttt{batch()} (execução paralela). Essa interface permite que componentes heterogêneos — desde templates até agentes — sejam compostos uniformemente via LCEL, facilitando testabilidade e observabilidade \cite{langchain2023docs}.
 
 % [PARÁGRAFO 2 - 4-5 linhas]: Categorias de componentes
 % - Model I/O: interface com modelos de linguagem
@@ -427,7 +394,7 @@ A implementação de RAG usa \textit{embeddings} e \textit{vector stores}. \text
 % - CharacterTextSplitter, RecursiveCharacterTextSplitter
 % - Chunk size, overlap e preservação de metadata
 
-A ingestão em sistemas RAG requer carregamento de documentos e divisão em \textit{chunks}. \textbf{\textit{Document Loaders}} conectam múltiplas fontes: \texttt{PyPDFLoader} (PDF), \texttt{WebBaseLoader} (web scraping), \texttt{UnstructuredLoader} (Word, PowerPoint, markdown), além de SQL e APIs REST. Cada loader retorna objetos \texttt{Document} com texto e metadados preservados. \textbf{\textit{Text Splitters}} dividem documentos longos em segmentos que cabem na janela de contexto: \texttt{CharacterTextSplitter} divide por caracteres em delimitadores, e \texttt{RecursiveCharacterTextSplitter} preserva estrutura semântica dividindo hierarquicamente por parágrafos, sentenças e palavras \cite{langchain2023docs}. Parâmetros principais: \texttt{chunk\_size} (tamanho máximo), \texttt{chunk\_overlap} (sobreposição para manter contexto), e metadados para rastrear origens.
+A ingestão em sistemas RAG requer carregamento e divisão de documentos. \textbf{\textit{Document Loaders}} conectam fontes diversas (PDF, web, Word, SQL, APIs), retornando objetos \texttt{Document} com texto e metadados. \textbf{\textit{Text Splitters}} dividem documentos em \textit{chunks}: \texttt{RecursiveCharacterTextSplitter} preserva estrutura semântica dividindo hierarquicamente por parágrafos e sentenças, com parâmetros \texttt{chunk\_size} (tamanho máximo) e \texttt{chunk\_overlap} (sobreposição para contexto) \cite{langchain2023docs}.
 
 % [PARÁGRAFO 4 - 3-4 linhas]: Retrievers
 % - Interface padronizada para busca de documentos relevantes
@@ -478,7 +445,7 @@ Ferramentas (\textit{tools}) estendem capacidades dos agentes: busca web, APIs, 
 % - Riscos: loops infinitos, erros de execução
 % - Necessidade de guardrails, timeouts e error handling
 
-Agentes apresentam limitações em produção. A qualidade do raciocínio depende do LLM: modelos menos capazes tomam decisões subótimas, selecionam ferramentas inadequadas ou geram parâmetros mal-formados. Custos são elevados: cada ciclo ReAct requer chamada ao modelo, e tarefas complexas exigem dezenas de iterações. Riscos incluem \textit{loops infinitos} (agente não reconhece objetivo atingido) e \textit{erros de execução} (entradas inválidas, timeouts). Aplicações robustas exigem \textit{guardrails} (restrições sobre ferramentas), \textit{timeouts} (limites de iterações/tempo) e \textit{error handling} robusto. Em cenários críticos, recomenda-se \textit{human-in-the-loop} para aprovação de decisões importantes.
+Agentes apresentam limitações em produção: a qualidade depende do LLM base, custos são elevados devido a múltiplas chamadas, e riscos incluem \textit{loops infinitos} e erros de execução. Aplicações robustas exigem \textit{guardrails}, \textit{timeouts} e \textit{error handling} robusto, e em cenários críticos recomenda-se \textit{human-in-the-loop}.
 
 % -----------------------------
 % 3.4 Recursos Adicionais
@@ -494,7 +461,7 @@ Agentes apresentam limitações em produção. A qualidade do raciocínio depend
 % - ConversationEntityMemory: rastreia entidades ao longo da conversa
 % - VectorStoreRetrieverMemory: busca por similaridade em histórico
 
-Aplicações conversacionais multi-turn requerem \textbf{memória} para manter contexto. O LangChain oferece estratégias de gerenciamento \cite{langchain2023docs}: \texttt{ConversationBufferMemory} armazena histórico completo, ideal para interações curtas; \texttt{ConversationBufferWindowMemory} mantém últimas $K$ mensagens em janela deslizante, equilibrando contexto e eficiência; \texttt{ConversationSummaryMemory} condensa mensagens antigas em resumos, preservando informação essencial com menos tokens — valiosa em conversas extensas; \texttt{ConversationEntityMemory} rastreia entidades (nomes, datas, preferências), mantendo conhecimento específico sem histórico textual completo, útil para assistentes que recordam fatos sobre usuários.
+Aplicações conversacionais multi-turn requerem \textbf{memória} para manter contexto. O LangChain oferece estratégias de gerenciamento \cite{langchain2023docs}: \texttt{ConversationBufferMemory} armazena histórico completo, ideal para interações curtas; \texttt{ConversationBufferWindowMemory} mantém últimas $K$ mensagens em janela deslizante, equilibrando contexto e eficiência; e \texttt{ConversationSummaryMemory} condensa mensagens antigas em resumos, preservando informação essencial com menos tokens — valiosa em conversas extensas.
 
 % [PARÁGRAFO 2 - 4-5 linhas]: Gestão de Contexto
 % - Limitações de janela: GPT-4 (8K/32K/128K), Claude (100K/200K), Gemini (1M+)
@@ -539,14 +506,6 @@ O LangChain tem sido aplicado em diversos domínios industriais e acadêmicos, d
 % - Exemplos: suporte técnico, vendas, FAQ
 Chatbots construídos com LangChain tipicamente suportam atendimento ao cliente automatizado, com memória conversacional para manter o contexto entre turnos e integração com bases de conhecimento empresariais para respostas precisas. Esses sistemas permitem também configurar personalidade e tom — essenciais para alinhamento com a marca — e são usados em cenários como suporte técnico, vendas e FAQ dinâmicos. A presença de módulos de logging e monitoramento (por exemplo, LangSmith) e o uso de técnicas de fine-tuning e instrução com feedback humano ajudam a melhorar a qualidade das interações e reduzir respostas inadequadas. \cite{langchain2023docs, langsmith2023, ouyang2022training}
 
-% [PARÁGRAFO 2 - 3-4 linhas]: Implementação típica
-% - Chat model + ConversationBufferMemory
-% - System prompt para definir comportamento
-% - Integration com database para informações específicas
-% - Logging e analytics para melhoria contínua
-
-A implementação típica combina um \texttt{chat model} com uma estratégia de memória (por exemplo, \texttt{ConversationBufferMemory}) para reter histórico relevante, um \textit{system prompt} que define o comportamento e integrações com bancos de dados ou APIs para recuperar informações específicas do usuário. Para produção, é comum instrumentar pipelines com logging, métricas e análises de conversação que alimentam ciclos de melhoria contínua (A/B tests, retreinos e ajustes de prompts). Essas práticas facilitam tanto o diagnóstico de falhas quanto a evolução do agente em produção. \cite{langchain2023docs, ji2023survey}
-
 
 % -----------------------------
 % 4.2 Sistemas de Question-Answering
@@ -562,15 +521,7 @@ A implementação típica combina um \texttt{chat model} com uma estratégia de 
 % - Citação de fontes para verificação
 % - Exemplos: assistente para documentação, legal research
 
-Sistemas de Question-Answering (QA) baseados em LangChain exploram amplamente o paradigma RAG (Retrieval-Augmented Generation) para responder perguntas sobre coleções documentais corporativas, como documentação técnica, manuais e relatórios. Ao recuperar passagens relevantes de uma base indexada e usar o LLM para gerar a resposta, esses sistemas entregam respostas fundamentadas em fontes verificáveis, reduzindo a incidência de \emph{hallucinations} e facilitando a citação de evidências. Aplicações típicas incluem assistentes para documentação interna, pesquisa legal e suporte a tomada de decisão. \cite{lewis2020retrieval, ji2023survey, anthopic2023claude}
-
-
-% [PARÁGRAFO 2 - 3-4 linhas]: Arquitetura típica
-% - Document ingestion pipeline
-% - Vector store para busca semântica
-% - RetrievalQA chain ou custom chain
-% - Post-processing para formatação de respostas
-A arquitetura padrão para QA inclui um \textit{document ingestion pipeline} (loaders e parsers), geração de embeddings e armazenamento em \textit{vector stores} para busca semântica, e um componente de \texttt{retriever} que seleciona trechos relevantes para o LLM. Chains prontos como \texttt{RetrievalQA} ou pipelines customizados orquestram a recuperação, a geração e um pós-processamento que formata respostas e acrescenta referências às fontes recuperadas. Para cenários em larga escala, práticas de engenharia (sharding de índices, aproximações para busca de vizinhança e monitoramento de latência) e trabalhos sobre embeddings e índices são relevantes para desempenho e custo. \cite{langchain2023docs, reimers2019sentence, johnson2019billion}
+Sistemas de Question-Answering (QA) baseados em LangChain aplicam o paradigma RAG (descrito na Seção~\ref{subsec:rag}) em cenários corporativos. A arquitetura utiliza os componentes de retrieval — document loaders, embeddings, vector stores e retrievers — organizados em chains como \texttt{RetrievalQA} que orquestram recuperação, geração e formatação de respostas com referências às fontes. Aplicações típicas incluem assistentes para documentação interna, pesquisa legal e suporte à tomada de decisão. Para cenários em larga escala, práticas de engenharia como sharding de índices, aproximações para busca de vizinhança e monitoramento de latência são relevantes para desempenho e custo. \cite{langchain2023docs, lewis2020retrieval, reimers2019sentence, johnson2019billion}
 
 % -----------------------------
 % 4.3 Agentes Autônomos
@@ -656,7 +607,7 @@ Embora o LangChain seja uma solução amplamente adotada para orquestração de 
 % - Interfaces mais simples para casos de uso específicos
 % - Menos abstração, mais direto
 % - Boa escolha quando retrieval é o foco principal
-O LlamaIndex (anteriormente conhecido por nomes como GPT Index) concentra-se especificamente em indexação de dados e em facilitar pipelines de retrieval para aplicações RAG. Sua força está em oferecer interfaces relativamente simples para ingestão de documentos, construção de índices e recuperação semântica, tornando-o uma escolha natural quando o objetivo principal é construir soluções de QA ou search fundamentadas em documentos. Em comparação com LangChain, LlamaIndex tende a ter menos camadas de abstração genéricas e é mais direto para cenários onde retrieval é o ponto central. \cite{llamaindex2023, lewis2020retrieval}
+O LlamaIndex concentra-se especificamente em indexação de dados e pipelines de retrieval para aplicações RAG, oferecendo interfaces simples para ingestão, construção de índices e recuperação semântica. É mais direto que o LangChain para cenários onde retrieval é o foco principal. \cite{llamaindex2023, lewis2020retrieval}
 
 % [PARÁGRAFO 2 - 4-5 linhas]: Semantic Kernel (Microsoft)
 % - Framework da Microsoft para AI orchestration
@@ -664,7 +615,7 @@ O LlamaIndex (anteriormente conhecido por nomes como GPT Index) concentra-se esp
 % - Conceitos: Skills, Planners, Memory
 % - Suporte C#, Python, Java
 % - Foco enterprise com Microsoft stack
-O Semantic Kernel foca em orquestração de AI com ênfase em integração com o ecossistema Microsoft — incluindo integração nativa com Azure OpenAI. Conceitos centrais do kernel incluem \emph{Skills}, \emph{Planners} e \emph{Memory}, proporcionando um modelo arquitetural que favorece cenários empresariais e aplicações fortemente integradas à stack Microsoft. O suporte a múltiplas linguagens (C\#, Python, Java) e o enfoque em padrões enterprise tornam o Semantic Kernel atrativo para organizações já inseridas na plataforma Azure. \cite{semantickernel2023}
+O Semantic Kernel foca em orquestração de AI com integração nativa ao ecossistema Microsoft (Azure OpenAI). Seus conceitos centrais — \emph{Skills}, \emph{Planners} e \emph{Memory} — e o suporte a múltiplas linguagens (C\#, Python, Java) o tornam atrativo para organizações na plataforma Azure. \cite{semantickernel2023}
 
 
 % [PARÁGRAFO 3 - 3-4 linhas]: Haystack (Deepset)
@@ -672,7 +623,7 @@ O Semantic Kernel foca em orquestração de AI com ênfase em integração com o
 % - Forte em question answering e document search
 % - Menos focado em conversational AI
 % - Boa para production search systems
-O Haystack é orientado para pipelines de NLP e sistemas de busca documentais em produção, com forte foco em QA, ingestão de documentos e integração com vector stores para busca semântica. É especialmente adequado para equipes que precisam de um produto maduro para search e question answering em produção, oferecendo componentes otimizados para indexação, recuperação e orquestração de pipelines de NLP. Em termos de foco, o Haystack tende a priorizar desempenho e estabilidade em search sobre capacidades conversacionais mais amplas. \cite{haystack2023, johnson2019billion}
+O Haystack é orientado para pipelines de NLP e sistemas de busca documentais em produção, com forte foco em QA e integração com vector stores. Oferece componentes otimizados para indexação e recuperação, priorizando desempenho e estabilidade em search sobre capacidades conversacionais. \cite{haystack2023, johnson2019billion}
 
 
 % [PARÁGRAFO 4 - 3-4 linhas]: Outras alternativas
@@ -683,44 +634,7 @@ O Haystack é orientado para pipelines de NLP e sistemas de busca documentais em
  Existem ainda outras abordagens e ferramentas no ecossistema: Guidance (Microsoft) enfatiza saída estruturada e controle fino sobre respostas; ferramentas como txtai oferecem soluções leves para busca semântica e workflows; plataformas como Dust fornecem infraestruturas para construção de assistentes AI. Além disso, muitas organizações optam por soluções customizadas que consomem APIs dos provedores de modelos diretamente, quando desejam máxima simplicidade ou controle de custo. Em suma, a decisão entre LangChain e alternativas deve considerar o nível de abstração desejado, a necessidade de integração com infraestruturas existentes, requisitos de escalabilidade e o tipo específico de aplicação (RAG, agentes, search ou chat). \cite{langchain2023docs, langchain2023github}
 
 % -----------------------------
-% 5.2 Comparação Estruturada
-% -----------------------------
-\subsection{Comparação Estruturada}
-\label{subsec:comparacao-estruturada}
-
-% [TABELA 1]: Comparação de frameworks
-\begin{table}[H]
-\centering
-\caption{Comparação entre frameworks de orquestração de LLMs}
-\label{tab:comparacao}
-\begin{tabular}{p{2.5cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}}
-\toprule
-\textbf{Característica} & \textbf{LangChain} & \textbf{LlamaIndex} & \textbf{Semantic Kernel} & \textbf{Haystack} \\
-\midrule
-% Preencher com comparações:
-% - Foco principal
-% - Curva de aprendizado
-% - Flexibilidade
-% - Comunidade
-% - Documentação
-% - Integrações
-% - Agent support
-% - RAG support
-% - Production ready
-% - Enterprise features
-\bottomrule
-\end{tabular}
-\end{table}
-
-% [PARÁGRAFO EXPLICATIVO - 5-6 linhas]: Análise da tabela
-% - LangChain: mais completo, maior flexibilidade
-% - LlamaIndex: melhor para RAG puro
-% - Semantic Kernel: melhor para Microsoft ecosystem
-% - Haystack: melhor para search-focused applications
-% - Escolha depende do caso de uso específico
-
-% -----------------------------
-% 5.3 Vantagens do LangChain
+% 5.2 Vantagens do LangChain
 % -----------------------------
 \subsection{Vantagens do LangChain}
 \label{subsec:vantagens}
@@ -744,7 +658,7 @@ Os casos de uso onde LangChain brilha incluem aplicações complexas que reúnem
 
 
 % -----------------------------
-% 5.4 Limitações e Desafios
+% 5.3 Limitações e Desafios
 % -----------------------------
 \subsection{Limitações e Desafios}
 \label{subsec:limitacoes}
