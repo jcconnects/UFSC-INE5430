@@ -385,7 +385,7 @@ LLMs possuem conhecimento limitado aos dados de treinamento, tornando-se desatua
 % - Operações: similarity_search, max_marginal_relevance_search
 % - Métricas: cosine similarity, euclidean distance, dot product
 
-A implementação de RAG usa \textit{embeddings} e \textit{vector stores}. \textit{Embeddings} são representações vetoriais que capturam semântica textual, onde proximidade vetorial reflete similaridade. O LangChain suporta múltiplos provedores: \texttt{OpenAIEmbeddings} (\texttt{text-embedding-3-small}), \texttt{HuggingFaceEmbeddings} (\texttt{sentence-transformers}), e \texttt{CohereEmbeddings} (multilíngue) \cite{langchain2023docs}. \textit{Vector stores} armazenam e buscam vetores eficientemente: \texttt{Chroma} (open-source), \texttt{Pinecone} (gerenciado), \texttt{FAISS} (Meta), \texttt{Weaviate} e \texttt{Qdrant}. Operações incluem \texttt{similarity\_search} (recupera \textit{k} documentos mais próximos) e \texttt{max\_marginal\_relevance\_search} (diversifica resultados). Métricas suportadas: similaridade cosseno, distância euclidiana e produto escalar.
+A implementação de RAG usa \textit{embeddings} e \textit{vector stores}. \textit{Embeddings} são representações vetoriais que capturam semântica textual, onde proximidade vetorial reflete similaridade. O LangChain suporta múltiplos provedores: \texttt{OpenAIEmbeddings} (\texttt{text-embedding-3-small}), \texttt{HuggingFaceEmbeddings} (\texttt{sentence -transformers}), e \texttt{CohereEmbeddings} (multilíngue) \cite{langchain2023docs}. \textit{Vector stores} armazenam e buscam vetores eficientemente: \texttt{Chroma} (open-source), \texttt{Pinecone} (gerenciado), \texttt{FAISS} (Meta), \texttt{Weaviate} e \texttt{Qdrant}. Operações incluem \texttt{similarity\_search} (recupera \textit{k} documentos mais próximos) e \texttt{max\_marginal\_relevance\_search} (diversifica resultados). Métricas suportadas: similaridade cosseno, distância euclidiana e produto escalar.
 
 % [PARÁGRAFO 3 - 4-5 linhas]: Document Loaders e Text Splitters
 % - Document Loaders: carregamento de múltiplas fontes (PDF, Web, SQL, APIs)
@@ -461,7 +461,7 @@ Agentes apresentam limitações em produção: a qualidade depende do LLM base, 
 % - ConversationEntityMemory: rastreia entidades ao longo da conversa
 % - VectorStoreRetrieverMemory: busca por similaridade em histórico
 
-Aplicações conversacionais multi-turn requerem \textbf{memória} para manter contexto. O LangChain oferece estratégias de gerenciamento \cite{langchain2023docs}: \texttt{ConversationBufferMemory} armazena histórico completo, ideal para interações curtas; \texttt{ConversationBufferWindowMemory} mantém últimas $K$ mensagens em janela deslizante, equilibrando contexto e eficiência; e \texttt{ConversationSummaryMemory} condensa mensagens antigas em resumos, preservando informação essencial com menos tokens — valiosa em conversas extensas.
+Aplicações conversacionais multi-turn requerem \textbf{memória} para manter contexto. O LangChain oferece estratégias de gerenciamento \cite{langchain2023docs}: \texttt{ConversationBufferMemory} armazena histórico completo, ideal para interações curtas; \texttt{ConversationBuffer WindowMemory} mantém últimas $K$ mensagens em janela deslizante, equilibrando contexto e eficiência; e \texttt{ConversationSummaryMemory} condensa mensagens antigas em resumos, preservando informação essencial com menos tokens — valiosa em conversas extensas.
 
 % [PARÁGRAFO 2 - 4-5 linhas]: Gestão de Contexto
 % - Limitações de janela: GPT-4 (8K/32K/128K), Claude (100K/200K), Gemini (1M+)
