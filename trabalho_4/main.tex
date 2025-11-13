@@ -1,0 +1,318 @@
+% !TeX program = lualatex
+% This document requires LuaLaTeX for compilation
+
+\documentclass[a4paper,12pt]{article}
+
+% Engine detection and compatibility check
+\RequirePackage{iftex}
+\ifLuaTeX
+  % Document is being compiled with LuaTeX - proceed normally
+\else
+  \PackageError{main}{This document requires LuaLaTeX for compilation.
+    Please use: lualatex main.tex}
+    {This document uses fontspec and other LuaTeX-specific features.}
+\fi
+
+\usepackage{fontspec}
+\usepackage[brazilian]{babel}
+
+% Font configuration for LuaTeX with proper encoding support
+\setmainfont{Latin Modern Roman}[
+  Ligatures=TeX,
+  Scale=1.0
+]
+\setsansfont{Latin Modern Sans}[
+  Ligatures=TeX,
+  Scale=MatchLowercase
+]
+\setmonofont{Latin Modern Mono}[
+  Ligatures=TeX,
+  Scale=MatchLowercase
+]
+
+% Ensure proper font encoding for math mode
+\usepackage{unicode-math}
+\setmathfont{Latin Modern Math}
+
+\usepackage{amsmath} % Para equações matemáticas
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{hyperref}
+\usepackage[sort,numbers]{natbib}
+\usepackage{parskip}
+\usepackage{longtable}
+\usepackage{xcolor}
+\usepackage{tabularx}
+\setlength{\marginparwidth}{2cm}
+\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+\usepackage{comment}
+\usepackage{graphicx} % Para resizebox
+\usepackage{array} % Para colunas com largura fixa
+\usepackage{listings}
+\usepackage{siunitx} % For \si{\micro\second}
+\usepackage[acronym,nonumberlist]{glossaries}
+\usepackage{placeins}
+\usepackage{float} % Para posicionamento exato com [H]
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+
+% Configuring listings for code and log display
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  breakatwhitespace=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny,
+  keywordstyle=\color{blue},
+  commentstyle=\color{gray},
+  showstringspaces=false,
+  tabsize=2,
+  extendedchars=true
+}
+
+% Configurações para melhor controle de floats (figuras e tabelas)
+\floatplacement{figure}{H}  % Força figuras a ficarem onde são definidas
+\floatplacement{table}{H}   % Força tabelas a ficarem onde são definidas
+\setcounter{topnumber}{2}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}
+\renewcommand{\topfraction}{0.85}
+\renewcommand{\bottomfraction}{0.85}
+\renewcommand{\textfraction}{0.15}
+\renewcommand{\floatpagefraction}{0.7}
+
+\title{Trabalho 4 - Reconhecimento de Padrões}
+\author{André Thiago Pfleger \\  Gustavo Girotto \\ João Pedro Schmidt Cordeiro}
+\date{\today}
+
+\begin{document}
+
+\begin{titlepage}
+   \begin{center}
+      \textsc{Universidade Federal de Santa Catarina} \\
+      \textsc{Centro Tecnológico} \\
+      \textsc{Departamento de Informática e Estatística} \\[4cm]
+
+      \textbf{\Large{INE5430 - Inteligência Artificial}} \\[2cm]
+
+      \textbf{\huge{Trabalho 4 - Reconhecimento de Padrões} \\[0.5cm]
+      \Large{Reconhecimento de Padrões}} \\[3cm]
+
+      André Thiago Pfleger \\
+      Gustavo Girotto \\
+      João Pedro Schmidt Cordeiro \\
+
+      \vfill
+
+      {Florianópolis} \\
+      {\today}
+   \end{center}
+\end{titlepage}
+
+
+\section{Introdução}
+\label{sec:introducao}
+
+O reconhecimento de padrões é o processo de treinamento de uma rede neural para atribuir uma classe correta para um conjunto de padrões de entrada. Uma vez treinada, a rede pode ser usada para classificar padrões que não tenha visto antes.
+
+Neste trabalho, implementamos e comparamos três arquiteturas diferentes de redes neurais para resolver um problema de classificação binária: determinar se uma imagem contém um gato ou não. Os dados para treinamento e teste foram obtidos a partir de uma base fornecida no curso de \textit{deep learning} de Andrew Ng.
+
+O objetivo é avaliar o desempenho de:
+\begin{itemize}
+    \item Regressão Logística (perceptron único)
+    \item Rede Neural de Camada Rasa (1 camada oculta)
+    \item Rede Neural Convolucional (CNN)
+\end{itemize}
+
+\section{Conjunto de Dados}
+\label{sec:dados}
+
+\subsection{Descrição dos Dados}
+
+O conjunto de dados utilizado consiste em imagens RGB de dimensão $64 \times 64 \times 3$, totalizando 12.288 pixels por imagem. Cada imagem é rotulada com um valor binário:
+\begin{itemize}
+    \item 0: Não Gato
+    \item 1: Gato
+\end{itemize}
+
+\subsection{Pré-processamento}
+
+Os dados foram pré-processados da seguinte forma:
+\begin{enumerate}
+    \item \textbf{Normalização}: Todos os valores dos pixels foram normalizados para o intervalo $[0, 1]$ através da divisão por 255.
+    \item \textbf{Achatamento}: Para os modelos de regressão logística e rede neural rasa, as imagens foram achatadas de uma matriz $64 \times 64 \times 3$ para um vetor unidimensional de 12.288 elementos.
+    \item \textbf{Formato original}: Para a rede convolucional, mantivemos o formato original $64 \times 64 \times 3$ para preservar a informação espacial.
+\end{enumerate}
+
+\subsection{Divisão dos Dados}
+
+Os dados foram divididos em dois conjuntos:
+\begin{itemize}
+    \item \textbf{Conjunto de Treino}: [INSERIR NÚMERO] imagens
+    \item \textbf{Conjunto de Teste}: [INSERIR NÚMERO] imagens
+\end{itemize}
+
+\section{Modelos Implementados}
+\label{sec:modelos}
+
+\subsection{Regressão Logística}
+\label{subsec:regressao}
+
+A regressão logística é o modelo mais simples, consistindo em um único neurônio (perceptron) com função de ativação sigmoide.
+
+\textbf{Arquitetura:}
+\begin{itemize}
+    \item Camada de entrada: 12.288 neurônios (imagem achatada)
+    \item Camada de saída: 1 neurônio com ativação sigmoide
+    \item Total de parâmetros: [INSERIR NÚMERO]
+\end{itemize}
+
+\textbf{Hiperparâmetros:}
+\begin{itemize}
+    \item Otimizador: Adam
+    \item Função de perda: Binary Crossentropy
+    \item Taxa de aprendizado: [PADRÃO DO ADAM]
+    \item Épocas: 50
+    \item Tamanho do batch: 32
+\end{itemize}
+
+\subsection{Rede Neural de Camada Rasa}
+\label{subsec:rasa}
+
+A rede neural rasa adiciona uma camada oculta entre a entrada e a saída, permitindo aprender representações não-lineares dos dados.
+
+\textbf{Arquitetura:}
+\begin{itemize}
+    \item Camada de entrada: 12.288 neurônios
+    \item Camada oculta: 7 neurônios com ativação ReLU
+    \item Camada de saída: 1 neurônio com ativação sigmoide
+    \item Total de parâmetros: [INSERIR NÚMERO]
+\end{itemize}
+
+\textbf{Hiperparâmetros:}
+\begin{itemize}
+    \item Otimizador: Adam
+    \item Função de perda: Binary Crossentropy
+    \item Taxa de aprendizado: [PADRÃO DO ADAM]
+    \item Épocas: 50
+    \item Tamanho do batch: 32
+\end{itemize}
+
+\subsection{Rede Neural Convolucional (CNN)}
+\label{subsec:cnn}
+
+A rede convolucional preserva a estrutura espacial das imagens, aplicando filtros convolucionais para extrair características relevantes.
+
+\textbf{Arquitetura:}
+\begin{itemize}
+    \item Camada de entrada: $64 \times 64 \times 3$
+    \item Camada Convolucional 1: 16 filtros $3 \times 3$, ativação ReLU
+    \item Camada de Pooling 1: Max Pooling $2 \times 2$
+    \item Camada Convolucional 2: 32 filtros $3 \times 3$, ativação ReLU
+    \item Camada de Pooling 2: Max Pooling $2 \times 2$
+    \item Camada de Achatamento (Flatten)
+    \item Camada Densa: 64 neurônios com ativação ReLU
+    \item Camada de Saída: 1 neurônio com ativação sigmoide
+    \item Total de parâmetros: [INSERIR NÚMERO]
+\end{itemize}
+
+\textbf{Hiperparâmetros:}
+\begin{itemize}
+    \item Otimizador: Adam
+    \item Função de perda: Binary Crossentropy
+    \item Taxa de aprendizado: [PADRÃO DO ADAM]
+    \item Épocas: 20
+    \item Tamanho do batch: 32
+\end{itemize}
+
+\section{Experimentos e Treinamento}
+\label{sec:experimentos}
+
+[DESCREVER OS EXPERIMENTOS REALIZADOS]
+[INCLUIR INFORMAÇÕES SOBRE DIFERENTES CONFIGURAÇÕES TESTADAS]
+[GRÁFICOS DE PERDA E ACURÁCIA DURANTE O TREINAMENTO]
+
+\subsection{Configuração dos Experimentos}
+
+[DETALHAR AS VARIAÇÕES DE HIPERPARÂMETROS TESTADAS]
+
+\subsection{Processo de Treinamento}
+
+[DESCREVER COMO FOI O TREINAMENTO DE CADA MODELO]
+[MENCIONAR TEMPO DE TREINAMENTO]
+[CONVERGÊNCIA]
+
+\section{Resultados}
+\label{sec:resultados}
+
+\subsection{Métricas de Desempenho}
+
+\begin{table}[H]
+\centering
+\caption{Acurácia dos modelos no conjunto de teste}
+\label{tab:acuracia}
+\begin{tabular}{|l|c|}
+\hline
+\textbf{Modelo} & \textbf{Acurácia (\%)} \\
+\hline
+Regressão Logística & [INSERIR VALOR] \\
+\hline
+Rede Neural Rasa & [INSERIR VALOR] \\
+\hline
+Rede Convolucional (CNN) & [INSERIR VALOR] \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Matrizes de Confusão}
+
+\subsubsection{Regressão Logística}
+
+[INSERIR MATRIZ DE CONFUSÃO]
+
+\subsubsection{Rede Neural de Camada Rasa}
+
+[INSERIR MATRIZ DE CONFUSÃO]
+
+\subsubsection{Rede Neural Convolucional}
+
+[INSERIR MATRIZ DE CONFUSÃO]
+
+\subsection{Análise Detalhada}
+
+[APRESENTAR OUTRAS MÉTRICAS: PRECISÃO, RECALL, F1-SCORE]
+
+\section{Discussão}
+\label{sec:discussao}
+
+\subsection{Comparação entre os Modelos}
+
+[COMPARAR O DESEMPENHO DOS TRÊS MODELOS]
+[DISCUTIR VANTAGENS E DESVANTAGENS DE CADA ABORDAGEM]
+
+\subsection{Análise dos Resultados}
+
+[INTERPRETAR OS RESULTADOS OBTIDOS]
+[DISCUTIR CASOS DE ERRO]
+[EXPLICAR POR QUE ALGUNS MODELOS SE SAÍRAM MELHOR]
+
+\subsection{Limitações}
+
+[DISCUTIR LIMITAÇÕES DO TRABALHO]
+[POSSÍVEIS MELHORIAS]
+
+\section{Conclusão}
+\label{sec:conclusao}
+
+[RESUMIR OS PRINCIPAIS ACHADOS]
+[DESTACAR QUAL MODELO TEVE MELHOR DESEMPENHO]
+[LIÇÕES APRENDIDAS]
+
+\appendix
+
+
+\bibliographystyle{plain}
+\bibliography{ref}
+
+\end{document}
