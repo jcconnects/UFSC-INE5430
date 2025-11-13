@@ -3,6 +3,9 @@ import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
+from sklearn.metrics import confusion_matrix
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 # Carregamento dos dados
 def carregar_dados():
@@ -24,6 +27,23 @@ def carregar_dados():
 
     return X_train, Y_train, X_train_flat, X_test, Y_test, X_test_flat
 
+# Função para plotar matriz de confusão
+def plotar_matriz_confusao(Y_true, Y_pred, nome_modelo):
+    cm = confusion_matrix(Y_true, Y_pred)
+    plt.figure(figsize=(6, 5))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
+                xticklabels=['Não-Gato', 'Gato'],
+                yticklabels=['Não-Gato', 'Gato'])
+    plt.ylabel('Valor Real')
+    plt.xlabel('Valor Predito')
+    plt.title(f'Matriz de Confusão - {nome_modelo}')
+    plt.tight_layout()
+    filename = f'confusion_matrix_{nome_modelo.replace(" ", "_").lower()}.png'
+    plt.savefig(filename, dpi=150)
+    plt.close()
+    print(f"Matriz de confusão salva: {filename}")
+    print(f"VP: {cm[1,1]} | VN: {cm[0,0]} | FP: {cm[0,1]} | FN: {cm[1,0]}\n")
+
 # Modelos
 
 # Regressão Logística (modelo linear)
@@ -39,10 +59,10 @@ def regressao_logistica_keras():
 
 
 # Rede Neural rasa (1 camada oculta)
-def rn_camada_rasa_keras():
+def rn_camada_rasa_keras(neurons = 7):
     model = keras.Sequential([
         layers.Input(shape=(12288,)),
-        layers.Dense(7, activation='relu'),
+        layers.Dense(neurons, activation='relu'),
         layers.Dense(1, activation='sigmoid')
     ])
     model.compile(optimizer='adam',
@@ -52,15 +72,15 @@ def rn_camada_rasa_keras():
 
 
 # CNN (Rede convolucional)
-def cnn_keras():
+def cnn_keras(filters1=16, filters2=32, dense_neurons=64):
     model = keras.Sequential([
         layers.Input(shape=(64, 64, 3)),
-        layers.Conv2D(16, (3, 3), activation='relu'),
+        layers.Conv2D(filters1, (3, 3), activation='relu'),
         layers.MaxPooling2D((2, 2)),
-        layers.Conv2D(32, (3, 3), activation='relu'),
+        layers.Conv2D(filters2, (3, 3), activation='relu'),
         layers.MaxPooling2D((2, 2)),
         layers.Flatten(),
-        layers.Dense(64, activation='relu'),
+        layers.Dense(dense_neurons, activation='relu'),
         layers.Dense(1, activation='sigmoid')
     ])
     model.compile(optimizer='adam',
@@ -83,7 +103,10 @@ if __name__ == "__main__":
     model = regressao_logistica_keras()
     model.fit(X_train_flat, Y_train, epochs=50, batch_size=32, verbose=2)
     loss, acc = model.evaluate(X_test_flat, Y_test, verbose=0)
-    print(f"Acurácia no conjunto de teste: {acc * 100:.2f}%\n\n")
+    print(f"Acurácia no conjunto de teste: {acc * 100:.2f}%")
+    Y_pred = (model.predict(X_test_flat, verbose=0) > 0.5).astype(int).flatten()
+    plotar_matriz_confusao(Y_test, Y_pred, "Regressão Logística")
+    print()
 
     # Rede Neural de Camada Rasa
     print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
@@ -92,7 +115,10 @@ if __name__ == "__main__":
     model = rn_camada_rasa_keras()
     model.fit(X_train_flat, Y_train, epochs=50, batch_size=32, verbose=2)
     loss, acc = model.evaluate(X_test_flat, Y_test, verbose=0)
-    print(f"Acurácia no conjunto de teste: {acc * 100:.2f}%\n\n")
+    print(f"Acurácia no conjunto de teste: {acc * 100:.2f}%")
+    Y_pred = (model.predict(X_test_flat, verbose=0) > 0.5).astype(int).flatten()
+    plotar_matriz_confusao(Y_test, Y_pred, "Rede Rasa")
+    print()
 
     # Rede Convolucional (CNN)
     print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
@@ -102,3 +128,5 @@ if __name__ == "__main__":
     model.fit(X_train, Y_train, epochs=20, batch_size=32, verbose=2)
     loss, acc = model.evaluate(X_test, Y_test, verbose=0)
     print(f"Acurácia no conjunto de teste: {acc * 100:.2f}%")
+    Y_pred = (model.predict(X_test, verbose=0) > 0.5).astype(int).flatten()
+    plotar_matriz_confusao(Y_test, Y_pred, "CNN")

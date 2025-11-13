@@ -1,0 +1,6 @@
+h5py==3.14.0
+numpy==2.0.2
+tensorflow==2.20.0
+scikit-learn==1.6.1
+matplotlib==3.9.4
+seaborn==0.13.2
